@@ -20,6 +20,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/index.js", "pages/_document.js", "pages/_app.js", "types/index.js", "layouts/default.js", "layouts/head.js", "components/navbar.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/index.js", "pages/_document.js", "pages/_app.js", "types/index.js", "layouts/default.js", "layouts/head.js", "components/navbar.js", "pages/api/main.js"],
   "exclude": ["node_modules"]
 }

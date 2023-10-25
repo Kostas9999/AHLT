@@ -1,20 +1,105 @@
 import DefaultLayout from "@/layouts/default";
-import { ironOptions } from "./api/session/session_Config";
+import { ironOptions } from "./api/session/session_config";
 import { withIronSessionSsr } from "iron-session/next";
+
 import { useRouter } from "next/router";
 
 const uuid = require("uuid");
 import axios from "axios";
 import React, { useState } from "react";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Textarea, Card, Text } from "@nextui-org/react";
+import Grid from "@mui/material/Grid";
 
 export default function IndexPage({ session_prop }) {
   const router = useRouter();
   let session = JSON.parse(session_prop);
+  console.log(session.init);
+  let pos = session.init.pos;
+  let lexicon = session.init.lexicon;
+  let rules = session.init.rules;
+
+  async function init() {}
   const handleSubmit = async (e) => {
+    init();
     e.preventDefault();
-    let endpoint = "/api/get_by_CID";
-    let data = { cid: e.target[0].value };
+  };
+
+  return (
+    <DefaultLayout>
+      <Grid gap={2} container wrap="nowrap" className=" mt-10 ">
+        <Grid xs={3} item={true}>
+          <Grid>
+            <section className=" justify-right text-center ">
+              <Textarea
+                isReadOnly
+                label="Parts Of Speach"
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder="Enter your description"
+                defaultValue={pos}
+                className="max-w-xs"
+              />
+            </section>
+          </Grid>
+          <Grid>
+            <section className=" justify-right text-center ">
+              <Textarea
+                isReadOnly
+                label="Rules"
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder="Enter your description"
+                defaultValue={rules}
+                className="max-w-xs"
+              />
+            </section>
+          </Grid>
+        </Grid>
+
+        <Grid xs={6} item={true}>
+          {" "}
+          <section className=" justify-right text-center">
+            <form onSubmit={handleSubmit}>
+              <Input
+                type="text"
+                isClearable="true"
+                placeholder="Please Enter Phrase"
+              />
+              <button type="submit">Submit</button>
+            </form>
+          </section>
+          <section className=" justify-right text-center ">
+            <Textarea
+              isReadOnly
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Enter your description"
+              defaultValue="Output"
+              className=" mt-10 "
+            />
+          </section>
+        </Grid>
+        <Grid xs={3} item={true}>
+          <section className=" justify-right text-center ">
+            <Textarea
+              isReadOnly
+              label="Lexicon"
+              variant="bordered"
+              labelPlacement="outside"
+              placeholder="Enter your description"
+              defaultValue={lexicon}
+              className="max-w-xs"
+            />
+          </section>
+        </Grid>
+      </Grid>
+    </DefaultLayout>
+  );
+}
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req }) {
+    let endpoint = "http://localhost:3000/api/main";
+    let data = { type: "init" };
 
     const response = await axios.post(endpoint, data, {
       headers: {
@@ -22,36 +107,7 @@ export default function IndexPage({ session_prop }) {
       },
     });
 
-    // update local session history
-    session.history = response.data.session.history;
-
-    if (response.data.status) {
-      router.push(`/ipfs/${e.target[0].value}`);
-    }
-    console.log(response.data.status);
-  };
-
-  return (
-    <DefaultLayout>
-      <section className="flex text-center justify-center  gap-1  py-10">
-        <div style={{ width: "50%" }} className=" text-center justify-center ">
-          <form onSubmit={handleSubmit}>
-            <Input
-              type="text"
-              isClearable="true"
-              placeholder="Please Enter CID"
-            />
-            <button type="submit" className=" justify-center  gap-1  md:py-5">
-              Submit
-            </button>
-          </form>
-        </div>
-      </section>
-    </DefaultLayout>
-  );
-}
-export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }) {
+    req.session.init = response.data.data;
     return {
       props: {
         session_prop: JSON.stringify(req.session),
