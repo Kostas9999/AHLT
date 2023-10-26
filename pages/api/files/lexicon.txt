@@ -1,5 +1,10 @@
-some 
-words 
-more
-words POS   NUMBER
-bites verb singular
+The DET ANY THE
+A N ANY A
+people N Plural PEOPLE
+person N Singular PERSON
+dog N Singular DOG
+dislike V singular LIKE
+dislikes V singular LIKE
+like V singular LIKE
+likes copV singular LIKE
+green ADJ ANY GREEN

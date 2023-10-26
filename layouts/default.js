@@ -13,8 +13,8 @@ export default function DefaultLayout({ children }) {
         <Link
           isExternal
           className="flex items-center gap-1 text-current"
-          href="http://ip-fs.cloud"
-          title="IPFS"
+          href="#"
+          title="AHLT"
         >
           <Logo_s />
           B00148740

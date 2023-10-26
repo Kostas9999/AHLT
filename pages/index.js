@@ -8,21 +8,73 @@ const uuid = require("uuid");
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Input, Textarea, Card, Text } from "@nextui-org/react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
 import Grid from "@mui/material/Grid";
 
 export default function IndexPage({ session_prop }) {
   const router = useRouter();
   let session = JSON.parse(session_prop);
-  console.log(session.init);
   let pos = session.init.pos;
   let lexicon = session.init.lexicon;
   let rules = session.init.rules;
 
+  const [output, setOutput] = React.useState("Output");
+  const [posBorder, setPosBorder] = React.useState(false);
+
   async function init() {}
   const handleSubmit = async (e) => {
-    init();
+    //init();
     e.preventDefault();
   };
+
+  const columns = [
+    {
+      key: "word",
+      label: "WORD",
+    },
+    {
+      key: "root",
+      label: "ROOT",
+    },
+    {
+      key: "POS",
+      label: "POS",
+    },
+    {
+      key: "number",
+      label: "NUMBER",
+    },
+  ];
+
+  async function parse(e) {
+    let text = e.target.value.trim();
+    let endpoint = "http://localhost:3000/api/main";
+    let data = { type: "parse", text };
+
+    const response = await axios.post(endpoint, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    let out = response.data.data;
+
+    let output = out.text;
+    
+    if (text == "") {
+      setPosBorder(false);
+    } else {
+      setPosBorder(!out.isDictionary);
+    }
+  
+    setOutput(output.join(" "));
+  }
 
   return (
     <DefaultLayout>
@@ -32,11 +84,12 @@ export default function IndexPage({ session_prop }) {
             <section className=" justify-right text-center ">
               <Textarea
                 isReadOnly
+                isInvalid={posBorder}
                 label="Parts Of Speach"
                 variant="bordered"
                 labelPlacement="outside"
                 placeholder="Enter your description"
-                defaultValue={pos}
+                defaultValue={pos.join("   ")}
                 className="max-w-xs"
               />
             </section>
@@ -49,7 +102,7 @@ export default function IndexPage({ session_prop }) {
                 variant="bordered"
                 labelPlacement="outside"
                 placeholder="Enter your description"
-                defaultValue={rules}
+                defaultValue={rules.join("\n")}
                 className="max-w-xs"
               />
             </section>
@@ -61,6 +114,7 @@ export default function IndexPage({ session_prop }) {
           <section className=" justify-right text-center">
             <form onSubmit={handleSubmit}>
               <Input
+                onChange={parse}
                 type="text"
                 isClearable="true"
                 placeholder="Please Enter Phrase"
@@ -70,26 +124,30 @@ export default function IndexPage({ session_prop }) {
           </section>
           <section className=" justify-right text-center ">
             <Textarea
-              isReadOnly
               variant="bordered"
               labelPlacement="outside"
               placeholder="Enter your description"
-              defaultValue="Output"
+              value={output}
               className=" mt-10 "
             />
           </section>
         </Grid>
         <Grid xs={3} item={true}>
           <section className=" justify-right text-center ">
-            <Textarea
-              isReadOnly
-              label="Lexicon"
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder="Enter your description"
-              defaultValue={lexicon}
-              className="max-w-xs"
-            />
+            <Table aria-label="Example table with dynamic content">
+              <TableHeader columns={columns}>
+                {(column) => (
+                  <TableColumn key={column.key}>{column.label}</TableColumn>
+                )}
+              </TableHeader>
+              <TableBody items={lexicon}>
+                {(item) => (
+                  <TableRow key={item.word}>
+                    {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </section>
         </Grid>
       </Grid>

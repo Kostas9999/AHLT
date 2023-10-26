@@ -3,6 +3,7 @@ import { ironOptions } from "./session/session_config";
 import { Words } from "./classes/Word";
 import { Pos } from "./classes/Pos";
 import { Rule } from "./classes/Rule";
+import { Parsel } from "./classes/Parsel";
 const fs = require("fs");
 
 export default withIronSessionApiRoute(main, ironOptions);
@@ -10,6 +11,7 @@ export default withIronSessionApiRoute(main, ironOptions);
 let lexicon;
 let pos;
 let rules;
+let parsel;
 async function main(req, res) {
   let data = req.body;
 
@@ -18,14 +20,33 @@ async function main(req, res) {
     load_pos();
     load_rule();
 
+    parsel = new Parsel(lexicon.lexicon, pos.pos, rules.rules);
+
     res.status(200).json({
       data: {
         pos: pos.pos,
         rules: rules.rules,
-        lexicon: lexicon.words,
+        lexicon: lexicon.lexicon,
       },
     });
   }
+
+  if (data.type == "parse") {
+    let isDictionary = true;
+    let input = data.text;
+    let parse_output = parsel.parse(input);
+
+    isDictionary = parsel.validate_dict(parse_output);
+   
+    res.status(200).json({
+      data: {
+        ok: true,
+        text: parse_output,
+        isDictionary,
+      },
+    });
+  }
+
   res.status(200).json({ data: { ok: false } });
 }
 
@@ -35,7 +56,6 @@ function load_lex() {
     flag: "r",
   });
   lexicon = new Words(lex_str);
-  //console.log(lexicon.words);
 }
 
 function load_pos() {
@@ -45,7 +65,6 @@ function load_pos() {
   });
 
   pos = new Pos(pos_str);
-  //  console.log(pos.pos);
 }
 
 function load_rule() {
@@ -55,5 +74,4 @@ function load_rule() {
   });
 
   rules = new Rule(rules_str);
-  console.log(rules.rules);
 }
