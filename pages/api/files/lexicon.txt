@@ -1,1 +1,5 @@
-some words more
+some 
+words 
+more
+words POS   NUMBER
+bites verb singular
