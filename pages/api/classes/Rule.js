@@ -1,11 +1,22 @@
 export class Rule {
+  element = [];
   constructor(line) {
-    this._line = line;
+  
+    this._line = line.trim();
+    let lines = this._line.split("\n");
+
+    lines.forEach((e) => {
+      let parts = e.split(" ");
+      this.element.push({
+        start: parts[0],
+        opt1: parts[1],
+        opt2: parts[2],
+      });
+    });
   }
 
   get rules() {
-    let all_Lines = this._line.split("\r\n");
-    const x = all_Lines.splice(1, all_Lines.length - 1);
-    return x;
+
+    return this.element
   }
 }

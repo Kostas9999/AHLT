@@ -17,7 +17,7 @@ export class Parsel {
   }
 
   translate_to_pos(input, lexicon) {
-    console.log(input);
+
     if (input == null) {
       return input;
     }
@@ -47,5 +47,16 @@ export class Parsel {
     });
 
     return out;
+  }
+
+  rules(input){
+    let lex = this._lexicon;
+    let rules = this._rules;
+
+    let output = input
+    
+    console.log(output)
+    output.push("]")
+return output
   }
 }
