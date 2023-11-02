@@ -35,13 +35,14 @@ async function main(req, res) {
     let isDictionary = true;
     let input = data.text;
     let parse_output = parsel.parse(input);
-
     isDictionary = parsel.validate_dict(parse_output);
+
+    let rules_output = parsel.rules(parse_output, lexicon, rules)    
    
     res.status(200).json({
       data: {
         ok: true,
-        text: parse_output,
+        text: rules_output,
         isDictionary,
       },
     });
