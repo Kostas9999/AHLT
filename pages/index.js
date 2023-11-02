@@ -4,7 +4,7 @@ import { withIronSessionSsr } from "iron-session/next";
 
 import { useRouter } from "next/router";
 import TreeChart from "./trent";
-import Treant from "treant-js";
+
 
 const uuid = require("uuid");
 import axios from "axios";
