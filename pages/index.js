@@ -5,7 +5,6 @@ import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import TreeChart from "./trent";
 
-
 const uuid = require("uuid");
 import axios from "axios";
 import React, { useState } from "react";
@@ -36,7 +35,7 @@ export default function IndexPage({ session_prop }) {
     e.preventDefault();
   };
 
-  const columns = [
+  const columns_dict = [
     {
       key: "word",
       label: "WORD",
@@ -52,6 +51,20 @@ export default function IndexPage({ session_prop }) {
     {
       key: "number",
       label: "NUMBER",
+    },
+  ];
+  const columns_rules = [
+    {
+      key: "start",
+      label: "Start",
+    },
+    {
+      key: "opt1",
+      label: "Opt1",
+    },
+    {
+      key: "opt2",
+      label: "Opt2",
     },
   ];
 
@@ -72,7 +85,7 @@ export default function IndexPage({ session_prop }) {
     if (text == "") {
       setPosBorder(false);
     } else {
-      setPosBorder(!out.isDictionary);
+      setPosBorder(!out.isPOS);
     }
 
     setOutput(output.join(" "));
@@ -80,8 +93,11 @@ export default function IndexPage({ session_prop }) {
 
   return (
     <DefaultLayout>
+      {/* MAIN Grid  */}
       <Grid gap={2} container wrap="nowrap" className=" mt-10 ">
+        {/* Left column  */}
         <Grid xs={3} item={true}>
+          {/* Left column  POS  */}
           <Grid>
             <section className=" justify-right text-center ">
               <Textarea
@@ -96,7 +112,24 @@ export default function IndexPage({ session_prop }) {
               />
             </section>
           </Grid>
+          {/* Left column RULES  */}
           <Grid>
+            <section className=" justify-right text-center "></section>
+            <Table aria-label="Example table with dynamic content">
+              <TableHeader columns={columns_rules}>
+                {(column) => (
+                  <TableColumn key={column.key}>{column.label}</TableColumn>
+                )}
+              </TableHeader>
+              <TableBody items={rules}>
+                {(item) => (
+                  <TableRow key={item.start}>
+                    {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+            {/*}
             <section className=" justify-right text-center ">
               <Textarea
                 isReadOnly
@@ -104,56 +137,69 @@ export default function IndexPage({ session_prop }) {
                 variant="bordered"
                 labelPlacement="outside"
                 placeholder="Enter your description"
-                defaultValue={rules.join("\n")}
+                defaultValue={rules[0].start}
                 className="max-w-xs"
               />
             </section>
+  */}
           </Grid>
         </Grid>
-
+        {/* Center column  */}
         <Grid xs={6} item={true}>
-          {" "}
-          <section className=" justify-right text-center">
-            <form onSubmit={handleSubmit}>
-              <Input
-                onChange={parse}
-                type="text"
-                isClearable="true"
-                placeholder="Please Enter Phrase"
+          {/*Center column INPUT*/}
+          <Grid>
+            <section className=" justify-right text-center">
+              <form onSubmit={handleSubmit}>
+                <Input
+                  onChange={parse}
+                  type="text"
+                  isClearable="true"
+                  placeholder="Please Enter Phrase"
+                />
+                <button type="submit">Submit</button>
+              </form>
+            </section>
+          </Grid>
+          {/*Center column OUTPUT*/}
+          <Grid>
+            <section className=" justify-right text-center ">
+              <Textarea
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder="Enter your description"
+                value={output}
+                className=" mt-10 "
               />
-              <button type="submit">Submit</button>
-            </form>
-          </section>
-          <section className=" justify-right text-center ">
-            <Textarea
-              variant="bordered"
-              labelPlacement="outside"
-              placeholder="Enter your description"
-              value={output}
-              className=" mt-10 "
-            />
-          </section>
-          <section className="  h-full">
-            <TreeChart />
-          </section>
+            </section>
+          </Grid>
+          {/*Center column TREE*/}
+          <Grid className="  h-full">
+            <section className="  h-full">
+              <TreeChart />
+            </section>
+          </Grid>
         </Grid>
+        {/* Right column MAIN*/}
         <Grid xs={3} item={true}>
-          <section className=" justify-right text-center ">
-            <Table aria-label="Example table with dynamic content">
-              <TableHeader columns={columns}>
-                {(column) => (
-                  <TableColumn key={column.key}>{column.label}</TableColumn>
-                )}
-              </TableHeader>
-              <TableBody items={lexicon}>
-                {(item) => (
-                  <TableRow key={item.word}>
-                    {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </section>
+          {/* Right column  DICTIONARY*/}
+          <Grid className="  h-full">
+            <section className=" justify-right text-center ">
+              <Table aria-label="Example table with dynamic content">
+                <TableHeader columns={columns_dict}>
+                  {(column) => (
+                    <TableColumn key={column.key}>{column.label}</TableColumn>
+                  )}
+                </TableHeader>
+                <TableBody items={lexicon}>
+                  {(item) => (
+                    <TableRow key={item.word}>
+                      {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </section>
+          </Grid>
         </Grid>
       </Grid>
     </DefaultLayout>

@@ -17,13 +17,12 @@ export class Parsel {
   }
 
   translate_to_pos(input, lexicon) {
-
     if (input == null) {
       return input;
     }
     let temp = [...input];
     input.forEach((word, i) => {
-      temp[i] = "_";
+      temp[i] = "?";
       lexicon.forEach((lex_word) => {
         if (word.toLowerCase() == lex_word.word.toLowerCase()) {
           temp[i] = lex_word.POS;
@@ -34,7 +33,7 @@ export class Parsel {
     return temp;
   }
 
-  validate_dict(input) {
+  validate_POS(input) {
     if (input.length == 0) {
       return true;
     }
@@ -49,14 +48,14 @@ export class Parsel {
     return out;
   }
 
-  rules(input){
+  rules(input) {
     let lex = this._lexicon;
     let rules = this._rules;
 
-    let output = input
-    
-    console.log(output)
-    output.push("]")
-return output
+    let output = input;
+
+    console.log(output);
+
+    return output;
   }
 }

@@ -17,15 +17,14 @@ const containerStyles = {
 // Note how deeper levels are defined recursively via the `children` property.
 
 const orgChart = {
-
   name: "S",
   children: [
     {
       name: "NP",
-      
+
       children: [
         {
-          name: "NP",       
+          name: "NP",
           children: [
             {
               name: "DET",
@@ -37,9 +36,8 @@ const orgChart = {
         },
         {
           name: "VP",
-          
+
           children: [
-        
             {
               name: "VB",
             },

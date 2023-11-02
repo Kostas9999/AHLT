@@ -1,10 +1,9 @@
 export class Rule {
   element = [];
   constructor(line) {
-  
     this._line = line.trim();
     let lines = this._line.split("\n");
-
+    lines.shift();
     lines.forEach((e) => {
       let parts = e.split(" ");
       this.element.push({
@@ -16,7 +15,6 @@ export class Rule {
   }
 
   get rules() {
-
-    return this.element
+    return this.element;
   }
 }

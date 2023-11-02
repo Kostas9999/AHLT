@@ -33,17 +33,19 @@ async function main(req, res) {
 
   if (data.type == "parse") {
     let isDictionary = true;
+    let isPOS = true;
     let input = data.text;
     let parse_output = parsel.parse(input);
-    isDictionary = parsel.validate_dict(parse_output);
+    isPOS = parsel.validate_POS(parse_output);
 
-    let rules_output = parsel.rules(parse_output, lexicon, rules)    
-   
+    let rules_output = parsel.rules(parse_output, lexicon, rules);
+
     res.status(200).json({
       data: {
         ok: true,
         text: rules_output,
         isDictionary,
+        isPOS,
       },
     });
   }
