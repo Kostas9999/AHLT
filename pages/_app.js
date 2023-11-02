@@ -4,6 +4,8 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { fontSans, fontMono } from "@/config/fonts";
 import { AppProps } from "next/app";
 
+import "./tree.css";
+
 export default function App({ Component, pageProps }) {
   return (
     <NextUIProvider>

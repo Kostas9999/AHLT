@@ -3,6 +3,8 @@ import { ironOptions } from "./api/session/session_config";
 import { withIronSessionSsr } from "iron-session/next";
 
 import { useRouter } from "next/router";
+import TreeChart from "./trent";
+import Treant from "treant-js";
 
 const uuid = require("uuid");
 import axios from "axios";
@@ -66,13 +68,13 @@ export default function IndexPage({ session_prop }) {
     let out = response.data.data;
 
     let output = out.text;
-    
+
     if (text == "") {
       setPosBorder(false);
     } else {
       setPosBorder(!out.isDictionary);
     }
-  
+
     setOutput(output.join(" "));
   }
 
@@ -130,6 +132,9 @@ export default function IndexPage({ session_prop }) {
               value={output}
               className=" mt-10 "
             />
+          </section>
+          <section className="  h-full">
+            <TreeChart />
           </section>
         </Grid>
         <Grid xs={3} item={true}>
