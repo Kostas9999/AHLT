@@ -28,6 +28,7 @@ export default function IndexPage({ session_prop }) {
 
   const [output, setOutput] = React.useState("Output");
   const [posBorder, setPosBorder] = React.useState(false);
+  const [trent_data, setTrent_data] = React.useState("Hallo");
 
   async function init() {}
   const handleSubmit = async (e) => {
@@ -87,7 +88,7 @@ export default function IndexPage({ session_prop }) {
     } else {
       setPosBorder(!out.isPOS);
     }
-
+    setTrent_data(output.join(" "));
     setOutput(output.join(" "));
   }
 
@@ -129,19 +130,6 @@ export default function IndexPage({ session_prop }) {
                 )}
               </TableBody>
             </Table>
-            {/*}
-            <section className=" justify-right text-center ">
-              <Textarea
-                isReadOnly
-                label="Rules"
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder="Enter your description"
-                defaultValue={rules[0].start}
-                className="max-w-xs"
-              />
-            </section>
-  */}
           </Grid>
         </Grid>
         {/* Center column  */}
@@ -149,15 +137,12 @@ export default function IndexPage({ session_prop }) {
           {/*Center column INPUT*/}
           <Grid>
             <section className=" justify-right text-center">
-              <form onSubmit={handleSubmit}>
-                <Input
-                  onChange={parse}
-                  type="text"
-                  isClearable="true"
-                  placeholder="Please Enter Phrase"
-                />
-                <button type="submit">Submit</button>
-              </form>
+              <Input
+                onChange={parse}
+                type="text"
+                isClearable="true"
+                placeholder="Please Enter Phrase"
+              />
             </section>
           </Grid>
           {/*Center column OUTPUT*/}
@@ -175,7 +160,7 @@ export default function IndexPage({ session_prop }) {
           {/*Center column TREE*/}
           <Grid className="  h-full">
             <section className="  h-full">
-              <TreeChart />
+              <TreeChart data={trent_data} />
             </section>
           </Grid>
         </Grid>

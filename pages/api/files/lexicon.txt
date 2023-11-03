@@ -1,5 +1,5 @@
-The DET ANY THE
-A DET ANY A
+The DT ANY THE
+A DT ANY A
 people NNS plural PEOPLE
 person NN singular PERSON
 dog NN singular DOG
@@ -7,4 +7,4 @@ dislike VB singular LIKE
 dislikes VB singular LIKE
 like VB singular LIKE
 likes VB singular LIKE
-green ADJ ANY GREEN
+green JJ ANY GREEN

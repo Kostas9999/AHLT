@@ -35,15 +35,19 @@ async function main(req, res) {
     let isDictionary = true;
     let isPOS = true;
     let input = data.text;
-    let parse_output = parsel.parse(input);
+    let parse_output = parsel.words_To_POS(input);
     isPOS = parsel.validate_POS(parse_output);
 
-    let rules_output = parsel.rules(parse_output, lexicon, rules);
+    let rules_output = parsel.output_arr(parse_output, lexicon, rules);
+    let rules_valid_word = parsel.validate_rules_words(rules_output);
+    let pharse_obj = parsel.validate_rules_phrase(rules_valid_word);
+    let obj_toSring = parsel.obj_toString(pharse_obj);
 
     res.status(200).json({
       data: {
         ok: true,
-        text: rules_output,
+        text: obj_toSring, //rules_valid_word[0],
+        pharse_obj,
         isDictionary,
         isPOS,
       },
