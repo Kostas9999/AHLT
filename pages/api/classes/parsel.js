@@ -1,3 +1,4 @@
+import { TreeNode } from "./TreeNode";
 export class Parsel {
   constructor(lexicon, pos, rules) {
     this._lexicon = lexicon;
@@ -63,7 +64,7 @@ export class Parsel {
       }
     }
 
-    //    console.log(output.length);
+
     return output;
   }
 
@@ -81,10 +82,11 @@ export class Parsel {
   }
 
   validate_rules_words(input) {
-    let inital_possible = [{ opt1: "DT" }, { opt1: "VB" }];
+    
     let output;
     let part = [];
     let phrase = [];
+    let inital_possible = [{ opt1: "DT" }, { opt1: "VB" }];
     let next_possible = inital_possible;
     output = [];
 
@@ -151,36 +153,8 @@ export class Parsel {
   }
 
   build_Tree(input) {
-    let possible_P_start = [{ opt1: "DT" }, { opt1: "VB" }];
-    let s = [];
-    let phrase = [];
-    let words = [];
-    let next = possible_P_start;
-    let prev = [];
-
-    for (let i = 0; i < input.length; i++) {
-      let rule = this.getNext_FromRule(input[i]);
-
-      prev = next;
-      next = [];
-      rule.forEach((e) => {
-        next.push(e);
-      });
-
-      for (let j = 0; j < prev.length; j++) {
-        if (input[i] == prev[j].opt1) {
-          words.push(input[i]);
-        }
-      }
-      if (next.length == 1 && next[0].opt1 == "#") {
-        phrase.push(words);
-        next = possible_P_start;
-        words = [];
-        //  rule = [];
-      }
-    }
-    if (phrase.length > 0 && next.length == 0) {
-      return;
-    }
+    let root = new TreeNode("S", null, null);
+    let rule = this.getNext_FromRule(input);
+    console.log(root);
   }
 }

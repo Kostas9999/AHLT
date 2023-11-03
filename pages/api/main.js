@@ -4,6 +4,7 @@ import { Words } from "./classes/Word";
 import { Pos } from "./classes/Pos";
 import { Rule } from "./classes/Rule";
 import { Parsel } from "./classes/Parsel";
+import { Obj_parsel } from "./classes/Obj_parsel";
 const fs = require("fs");
 
 export default withIronSessionApiRoute(main, ironOptions);
@@ -12,6 +13,7 @@ let lexicon;
 let pos;
 let rules;
 let parsel;
+let obj_parsel;
 async function main(req, res) {
   let data = req.body;
 
@@ -21,6 +23,7 @@ async function main(req, res) {
     load_rule();
 
     parsel = new Parsel(lexicon.lexicon, pos.pos, rules.rules);
+    obj_parsel = new Obj_parsel(lexicon.lexicon, pos.pos, rules.rules);
 
     res.status(200).json({
       data: {
@@ -35,21 +38,32 @@ async function main(req, res) {
     let isDictionary = true;
     let isPOS = true;
     let input = data.text;
-    let parse_output = parsel.words_To_POS(input);
-    isPOS = parsel.validate_POS(parse_output);
 
-    let rules_output = parsel.output_arr(parse_output, lexicon, rules);
-    let rules_valid_word = parsel.validate_rules_words(rules_output);
-    let pharse_obj = parsel.validate_rules_phrase(rules_valid_word);
-    let obj_toSring = parsel.obj_toString(pharse_obj);
+    //let parse_output = parsel.words_To_POS(input);
+    //isPOS = parsel.validate_POS(parse_output);
+    //let rules_output = parsel.output_arr(parse_output, lexicon, rules);
+    //let rules_valid_word = parsel.validate_rules_words(rules_output);
+    //let pharse_obj = parsel.validate_rules_phrase(rules_valid_word);
+    //let obj_toSring = parsel.obj_toString(pharse_obj);
+    // parsel.build_Tree(rules_valid_word[0]);
+
+    //let word_to_obj = obj_parsel.word_to_struc(input);
+    let words_to_obj_arr = obj_parsel.words_to_obj_arr(input);
+    let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr);
+
+    let all_s = obj_parsel.all_s(obj_arr_to_S_arr);
+
+    //console.log(obj_arr_to_S_arr);
+
+    let output = input;
 
     res.status(200).json({
       data: {
         ok: true,
-        text: obj_toSring, //rules_valid_word[0],
-        pharse_obj,
-        isDictionary,
-        isPOS,
+        text: output, //rules_valid_word[0],
+        // pharse_obj,
+        //  isDictionary,
+        //  isPOS,
       },
     });
   }

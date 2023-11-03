@@ -88,8 +88,8 @@ export default function IndexPage({ session_prop }) {
     } else {
       setPosBorder(!out.isPOS);
     }
-    setTrent_data(output.join(" "));
-    setOutput(output.join(" "));
+    setTrent_data(output);
+    setOutput(output);
   }
 
   return (

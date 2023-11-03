@@ -8,3 +8,4 @@ dislikes VB singular LIKE
 like VB singular LIKE
 likes VB singular LIKE
 green JJ ANY GREEN
+AND CC TEST TEST
