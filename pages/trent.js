@@ -16,6 +16,36 @@ const containerStyles = {
 // This is a simplified example of an org chart with a depth of 2.
 // Note how deeper levels are defined recursively via the `children` property.
 
+let x =[
+  {
+    name: "NP",
+
+    children: [
+      {
+        name: "NP",
+        children: [
+          {
+            name: "DET",
+          },
+          {
+            name: "NN",
+          },
+        ],
+      },
+      {
+        name: "VP",
+
+        children: [
+          {
+            name: "VB",
+          },
+        ],
+      },
+    ],
+  },
+]
+
+
 const config = {
   nodeSize: { x: 200, y: 100 }, // Adjust the node size as needed
   separation: { siblings: 1, nonSiblings: 2 },
@@ -23,37 +53,11 @@ const config = {
   orientation: "vertical", // Set the tree orientation to "vertical"
 };
 
-export default function OrgChartTree({ data }) {
+export default function OrgChartTree({children}) {
+ 
   const orgChart = {
-    name: data,
-    children: [
-      {
-        name: "NP",
-
-        children: [
-          {
-            name: "NP",
-            children: [
-              {
-                name: "DET",
-              },
-              {
-                name: "NN",
-              },
-            ],
-          },
-          {
-            name: "VP",
-
-            children: [
-              {
-                name: "VB",
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    name: "S",
+    children: children,
   };
   return (
     // `<Tree />` will fill width/height of its container; in this case `#treeWrapper`.
@@ -65,7 +69,7 @@ export default function OrgChartTree({ data }) {
         translate={{ x: 350, y: 50 }}
         rootNodeClassName="node__root"
         branchNodeClassName="node__branch"
-        pathClassFunc="node__leaf"
+        pathClassFunc="node__branch"
         styles={treeStyles}
       />
     </div>

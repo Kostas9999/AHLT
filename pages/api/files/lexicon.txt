@@ -1,5 +1,5 @@
-The DT ANY THE
-A DT ANY A
+the DT ANY THE
+a DT ANY A
 people NNS plural PEOPLE
 person NN singular PERSON
 dog NN singular DOG
@@ -8,4 +8,3 @@ dislikes VB singular LIKE
 like VB singular LIKE
 likes VB singular LIKE
 green JJ ANY GREEN
-AND CC TEST TEST

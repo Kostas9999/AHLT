@@ -28,7 +28,7 @@ export default function IndexPage({ session_prop }) {
 
   const [output, setOutput] = React.useState("Output");
   const [posBorder, setPosBorder] = React.useState(false);
-  const [trent_data, setTrent_data] = React.useState("Hallo");
+  const [trent_data, setTrent_data] = React.useState(null);
 
   async function init() {}
   const handleSubmit = async (e) => {
@@ -38,7 +38,7 @@ export default function IndexPage({ session_prop }) {
 
   const columns_dict = [
     {
-      key: "word",
+      key: "name",
       label: "WORD",
     },
     {
@@ -82,13 +82,14 @@ export default function IndexPage({ session_prop }) {
     let out = response.data.data;
 
     let output = out.text;
+    let tr_data = out.trent_data;
 
     if (text == "") {
       setPosBorder(false);
     } else {
       setPosBorder(!out.isPOS);
     }
-    setTrent_data(output);
+    setTrent_data(tr_data);
     setOutput(output);
   }
 
@@ -160,7 +161,7 @@ export default function IndexPage({ session_prop }) {
           {/*Center column TREE*/}
           <Grid className="  h-full">
             <section className="  h-full">
-              <TreeChart data={trent_data} />
+              <TreeChart children={trent_data} />
             </section>
           </Grid>
         </Grid>
@@ -177,7 +178,7 @@ export default function IndexPage({ session_prop }) {
                 </TableHeader>
                 <TableBody items={lexicon}>
                   {(item) => (
-                    <TableRow key={item.word}>
+                    <TableRow key={item.name}>
                       {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
                     </TableRow>
                   )}

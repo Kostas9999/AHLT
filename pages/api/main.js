@@ -51,16 +51,19 @@ async function main(req, res) {
     let words_to_obj_arr = obj_parsel.words_to_obj_arr(input);
     let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr);
 
-    let all_s = obj_parsel.all_s(obj_arr_to_S_arr);
+    let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr);
+    let s_obj_str = obj_parsel.sObjToString(all_s_obj)
+    let obj_to_trent = obj_parsel.toTrent(all_s_obj)
 
-    //console.log(obj_arr_to_S_arr);
+   
 
-    let output = input;
+    let output = s_obj_str;
 
     res.status(200).json({
       data: {
         ok: true,
         text: output, //rules_valid_word[0],
+        trent_data: obj_to_trent
         // pharse_obj,
         //  isDictionary,
         //  isPOS,

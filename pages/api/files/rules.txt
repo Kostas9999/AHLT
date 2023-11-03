@@ -9,6 +9,4 @@ NNS # #
 VB DT #
 DT JJ #
 JJ NN #
-NN CC #
-CC DT #
-CC NN #
+

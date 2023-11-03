@@ -1,3 +1,5 @@
+import { Children } from "react";
+
 export class Obj_parsel {
   constructor(lexicon, pos, rules) {
     this._lexicon = lexicon;
@@ -9,7 +11,7 @@ export class Obj_parsel {
     let lex = this._lexicon;
 
     for (let i = 0; i < lex.length; i++) {
-      if (lex[i].word.toLowerCase() == input.toLowerCase()) {
+      if (lex[i].name.toLowerCase() == input.toLowerCase()) {
         output = lex[i];
       }
     }
@@ -33,19 +35,19 @@ export class Obj_parsel {
   obj_arr_to_S_arr(input) {
     let output = [];
     let words = [];
-    let count = 0;
+    let count = 1;
 
     input.forEach((e) => {
       if (e.POS == "CC") {
         words.push(e);
-        output.push({ type: "S", tag: count++, data: words });
+        output.push({ name:`S${count++}`, count: count++, children: words });
         words = [];
       } else {
         words.push(e);
       }
     });
 
-    output.push({ type: "S", tag: count, data: words });
+    output.push({ name: `S${count++}`, count: count, children: words });
 
     return output;
   }
@@ -64,31 +66,37 @@ export class Obj_parsel {
 
       for (let i = 0; i < next_possible.length; i++) {
         let r = next_possible[i];
-        console.log(word_pos, r);
-        if (r.length == 1 && r.opt1 == "#") {
-          p.push({ type: "P", tag: "", data: words });
+      
+        if (next_possible.length == 1 && r.opt1 == "#") {      /// if there no more
+          let tag = this.tag_pharse(words)
+          
+          p.push({ type: "P", name: tag, children: words });
           next_possible = inital_possible;
-          words = [];
+          words = [];         
+        
         } else if (word_pos == r.opt1) {
           words.push(curr_word_obj);
-          next_possible = this.getNext_FromRule(word_pos);
+          next_possible = this.getNext_FromRule(word_pos);         
         }
       }
     }
+    let tag = this.tag_pharse(words)
+    p.push({ type: "P", name: tag, children: words });   
 
-    p.push({ type: "P", tag: "tag", data: words });
-    console.log(p);
     return p;
   }
 
   all_s(input) {
     let output = [];
 
-    for (let i = 0; i < input.length; i++) {
-      if (input[i].data.length > 0) {
-        let x = this.s_to_p(input[i].data);
 
-        output.push(x);
+   
+    for (let i = 0; i < input.length; i++) {
+      if (input[i].children.length > 0) {
+        let x = this.s_to_p(input[i].children);
+        input[i].children = x
+
+        output.push(input[i]);
       }
     }
 
@@ -109,6 +117,69 @@ export class Obj_parsel {
   }
 
   tag_pharse(input) {
-    return "input";
+  
+    for(let i = 0; i< input.length; i++){
+      let curr_word = input[i].POS
+      if(curr_word == "DT" || curr_word == "NN"|| curr_word == "NN") return "NP"
+      if(curr_word == "VB") return "VP"
+   
+    }
+    return "";
   }
+
+  sObjToString(input){
+    let output ="[ ";
+    input = input[0]
+    output += `${input.name} ${input.count} `
+    input['children'].forEach(e => {   
+    output +=  `[ ${e.name}  `
+      e['children'].forEach(e=>{     
+    output +=  `${e.POS} `
+      })
+       output += ` ]`
+    });
+    output = output+ "]"   
+    return output;
+  }
+
+  toTrent(input){
+
+    let x = input
+
+
+    /*
+
+    let x =[
+      {
+        name: "vg",
+    
+        children: [
+          {
+            name: "NP",
+            children: [
+              {
+                name: "DET",
+              },
+              {
+                name: "NN",
+              },
+            ],
+          },
+          {
+            name: "VP",    
+            children: [
+              {
+                name: "VB",
+              },
+            ],
+          },
+        ],
+      },
+    ]
+*/
+    return x;
+
+
+  }
+
 }
