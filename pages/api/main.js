@@ -5,6 +5,7 @@ import { Pos } from "./classes/Pos";
 import { Rule } from "./classes/Rule";
 import { Parsel } from "./classes/Parsel";
 import { Obj_parsel } from "./classes/Obj_parsel";
+import {TreePlay} from "./classes/treePlay"
 const fs = require("fs");
 
 export default withIronSessionApiRoute(main, ironOptions);
@@ -18,6 +19,10 @@ async function main(req, res) {
   let data = req.body;
 
   if (data.type == "init") {
+
+
+
+
     load_lex();
     load_pos();
     load_rule();
@@ -33,6 +38,8 @@ async function main(req, res) {
       },
     });
   }
+
+  
 
   if (data.type == "parse") {
     let isDictionary = true;
@@ -55,6 +62,8 @@ async function main(req, res) {
     let s_obj_str = obj_parsel.sObjToString(all_s_obj)
     let obj_to_trent = obj_parsel.toTrent(all_s_obj)
 
+
+   new TreePlay().run()
    
 
     let output = s_obj_str;
