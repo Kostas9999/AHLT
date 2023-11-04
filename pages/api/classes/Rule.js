@@ -7,9 +7,9 @@ export class Rule {
     lines.forEach((e) => {
       let parts = e.split(" ");
       this.element.push({
-        start: parts[0],
-        opt1: parts[1],
-        opt2: parts[2],
+        start: parts[0].trim(),
+        opt1: parts[1].trim(),
+        opt2: parts[2].trim(),
       });
     });
   }

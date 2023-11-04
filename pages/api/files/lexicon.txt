@@ -1,5 +1,5 @@
 the DT ANY THE
-a DT ANY A
+a DT singular A
 people NNS plural PEOPLE
 person NN singular PERSON
 dog NN singular DOG

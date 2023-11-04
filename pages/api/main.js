@@ -5,7 +5,7 @@ import { Pos } from "./classes/Pos";
 import { Rule } from "./classes/Rule";
 import { Parsel } from "./classes/Parsel";
 import { Obj_parsel } from "./classes/Obj_parsel";
-import {TreePlay} from "./classes/treePlay"
+import { TreePlay } from "./classes/treePlay";
 const fs = require("fs");
 
 export default withIronSessionApiRoute(main, ironOptions);
@@ -19,10 +19,6 @@ async function main(req, res) {
   let data = req.body;
 
   if (data.type == "init") {
-
-
-
-
     load_lex();
     load_pos();
     load_rule();
@@ -38,8 +34,6 @@ async function main(req, res) {
       },
     });
   }
-
-  
 
   if (data.type == "parse") {
     let isDictionary = true;
@@ -59,12 +53,8 @@ async function main(req, res) {
     let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr);
 
     let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr);
-    let s_obj_str = obj_parsel.sObjToString(all_s_obj)
-    let obj_to_trent = obj_parsel.toTrent(all_s_obj)
-
-
-   new TreePlay().run()
-   
+    let s_obj_str = obj_parsel.sObjToString(all_s_obj);
+    let obj_to_trent = obj_parsel.toTrent(all_s_obj);
 
     let output = s_obj_str;
 
@@ -72,7 +62,7 @@ async function main(req, res) {
       data: {
         ok: true,
         text: output, //rules_valid_word[0],
-        trent_data: obj_to_trent
+        trent_data: obj_to_trent,
         // pharse_obj,
         //  isDictionary,
         //  isPOS,

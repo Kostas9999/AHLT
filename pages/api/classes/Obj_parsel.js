@@ -40,14 +40,14 @@ export class Obj_parsel {
     input.forEach((e) => {
       if (e.POS == "CC") {
         words.push(e);
-        output.push({ name:`S${count++}`, count: count++, children: words });
+        output.push({ name: `S${count++}`, count: count++, children: words });
         words = [];
       } else {
         words.push(e);
       }
     });
 
-    output.push({ name: `S${count++}`, count: count, children: words });
+    output.push({ name: `S${count}`, count: count, children: words });
 
     return output;
   }
@@ -66,22 +66,22 @@ export class Obj_parsel {
 
       for (let i = 0; i < next_possible.length; i++) {
         let r = next_possible[i];
-      
-        if (next_possible.length == 1 && r.opt1 == "#") {      /// if there no more
-          let tag = this.tag_pharse(words)
-          
+
+        if (next_possible.length == 1 && r.opt1 == "#") {
+          /// if there no more
+          let tag = this.tag_pharse(words);
+
           p.push({ type: "P", name: tag, children: words });
           next_possible = inital_possible;
-          words = [];         
-        
+          words = [];
         } else if (word_pos == r.opt1) {
           words.push(curr_word_obj);
-          next_possible = this.getNext_FromRule(word_pos);         
+          next_possible = this.getNext_FromRule(word_pos);
         }
       }
     }
-    let tag = this.tag_pharse(words)
-    p.push({ type: "P", name: tag, children: words });   
+    let tag = this.tag_pharse(words);
+    p.push({ type: "P", name: tag, children: words });
 
     return p;
   }
@@ -89,12 +89,10 @@ export class Obj_parsel {
   all_s(input) {
     let output = [];
 
-
-   
     for (let i = 0; i < input.length; i++) {
       if (input[i].children.length > 0) {
         let x = this.s_to_p(input[i].children);
-        input[i].children = x
+        input[i].children = x;
 
         output.push(input[i]);
       }
@@ -117,35 +115,32 @@ export class Obj_parsel {
   }
 
   tag_pharse(input) {
-  
-    for(let i = 0; i< input.length; i++){
-      let curr_word = input[i].POS
-      if(curr_word == "DT" || curr_word == "NN"|| curr_word == "NN") return "NP"
-      if(curr_word == "VB") return "VP"
-   
+    for (let i = 0; i < input.length; i++) {
+      let curr_word = input[i].POS;
+      if (curr_word == "DT" || curr_word == "NN" || curr_word == "NN")
+        return "NP";
+      if (curr_word == "VB") return "VP";
     }
     return "";
   }
 
-  sObjToString(input){
-    let output ="[ ";
-    input = input[0]
-    output += `${input.name} ${input.count} `
-    input['children'].forEach(e => {   
-    output +=  `[ ${e.name}  `
-      e['children'].forEach(e=>{     
-    output +=  `${e.POS} `
-      })
-       output += ` ]`
+  sObjToString(input) {
+    let output = "[ ";
+    input = input[0];
+    output += `${input.name}  `;
+    input["children"].forEach((e) => {
+      output += `[ ${e.name}   `;
+      e["children"].forEach((e) => {
+        output += `${e.POS} ${e.name} `;
+      });
+      output += ` ]`;
     });
-    output = output+ "]"   
+    output = output + "]";
     return output;
   }
 
-  toTrent(input){
-
-    let x = input
-
+  toTrent(input) {
+    let x = input;
 
     /*
 
@@ -178,8 +173,5 @@ export class Obj_parsel {
     ]
 */
     return x;
-
-
   }
-
 }
