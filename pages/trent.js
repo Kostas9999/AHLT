@@ -46,12 +46,7 @@ let x =[
 ]
 
 
-const config = {
-  nodeSize: { x: 200, y: 100 }, // Adjust the node size as needed
-  separation: { siblings: 1, nonSiblings: 2 },
-  zoom: 0.6, // Adjust the zoom level as needed
-  orientation: "vertical", // Set the tree orientation to "vertical"
-};
+
 
 export default function OrgChartTree({children}) {
  
@@ -59,18 +54,34 @@ export default function OrgChartTree({children}) {
     name: "S",
     children: children,
   };
+
+
+ 
+  
+  const treeConfig = {
+    nodeSize: { x: 150, y: 100 }, // Adjust node size as needed
+    transitionDuration: 500, // Set transition duration in milliseconds
+    linkColor: 'blue', // Set the link color
+    nodeSize: { x: 150, y: 100 }, // Adjust the node size as needed
+    separation: { siblings: 1, nonSiblings: 2 },
+    zoom: 0.6, // Adjust the zoom level as needed
+    orientation: "vertical", // Set the tree orientation to "vertical"
+    transitionDuration: 1000,
+    rootNodeClassName:"node__root",
+    branchNodeClassName:"node__branch",
+    pathClassFunc:"node__branch",
+   
+      // styles={treeStyles}
+    
+  };
   return (
     // `<Tree />` will fill width/height of its container; in this case `#treeWrapper`.
     <div style={containerStyles}>
       <Tree
-        data={orgChart}
-        orientation={config.orientation}
-        zoom={config.zoom}
+        data={orgChart}    
         translate={{ x: 350, y: 50 }}
-        rootNodeClassName="node__root"
-        branchNodeClassName="node__branch"
-        pathClassFunc="node__branch"
-        styles={treeStyles}
+ 
+        {...treeConfig}
       />
     </div>
   );

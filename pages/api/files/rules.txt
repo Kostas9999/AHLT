@@ -9,4 +9,5 @@ NNS # #
 VB DT #
 DT JJ #
 JJ NN #
+VP VB NP
 
