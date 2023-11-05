@@ -5,7 +5,12 @@ NP DT NNS
 NP DT NP
 NN # #
 DT # #
+DT JJ NN
+DT JJ NNS
 JJ # #
+VP VB #
+VP VB NP
+
 
 
 

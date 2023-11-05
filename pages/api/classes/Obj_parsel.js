@@ -51,36 +51,182 @@ export class Obj_parsel {
 
     return output;
   }
+  parse_childs(input) {
+    console.log(input);
+  }
 
   parsePhrases(input, find) {
-    let patterns = [];
-
+    let leftNode = { wordsConsumed: 0 };
+    let rightNode = { wordsConsumed: 0 };
+    let offset = 0;
+    let S = { leftNode, rightNode };
     let rules = this.getNext_FromRule(find);
-
     for (let i = 0; i < rules.length; i++) {
-      let r = this.getNext_FromRule(rules[i].opt1);
+      //  if (rules[i].opt1 == "NP") {
+      leftNode = this.getNP(input, rules[i].opt1, offset);
 
-      for (let i = 0; i < r.length; i++) {
-        let x = this.getNext_FromRule(r[i].opt1);
+      offset = leftNode?.wordsConsumed;
+      if (leftNode.valid) {
+        input.splice(0, leftNode.wordsConsumed);
 
-        for (let i = 0; i < x.length; i++) {}
+        rightNode = this.getNP(input, rules[i].opt2, offset);
       }
+
+      let S = { leftNode, rightNode };
+
+      return S;
+      // }
     }
   }
 
-  x = [];
-  findGroud(input, find) {
-    let rules = this.getNext_FromRule(find);
-    for (let i = 0; i < rules.length; i++) {
-      let e = rules[i];
+  getNP(input_obj, find, offset) {
+    // get settings for particular POS
+    // settings specific to POS for expected structure
+    // e.g. NP expect to have   DT (JJ) [NN, NNS]
+    // where round brackets indicate optionals
+    // also settings include indication in which possiton optional expected
+    // settig include MUST have elements e.g NP extected to cantain NN or NNS
+    let settigs = this.getSettigsForPOS(find);
 
-      if (e.opt1 == "#") {
-        return;
-      }
-      this.x.push(e.opt1);
-      this.findGroud(input, e.opt1);
+    let valid = true;
+    let number_arr = [];
+    let number;
+    let output;
+    let words = [];
+
+    let err = "none";
+    if (input_obj.length == 1 && Object.keys(input_obj[0]).length == 0) {
+      let output = {};
+      output.valid = false;
+      output.wordsConsumed = 0;
+      return output;
     }
-    console.log(this.x);
+
+    // for processing take only word array
+    let input = input_obj;
+
+    for (let i = 0; i < input.length; i++) {
+      /// break if text longer then expected length of output
+      if (i == settigs.expected.length) {
+        break;
+      }
+      let curr_word = input[i];
+
+      if (find == "VP") {
+        // console.log(settigs.optional_Pos);
+      }
+      // check if word POS matches expected POS
+      if (settigs.expected[i].includes(curr_word.POS)) {
+        words.push(curr_word);
+        number_arr.push(curr_word.number);
+        continue;
+      } else if (i == settigs.optional_Pos) {
+        // special case for optinal words
+        if (find == "VP") {
+          let tempIN = input;
+          tempIN.shift();
+
+          let x = this.getNP(tempIN, settigs.optional[0]);
+          words.push(x);
+
+          valid = x.valid;
+        } else {
+          if (settigs?.expected[i + 1].includes(curr_word.POS)) {
+            words.push(curr_word);
+            number_arr.push(curr_word.number);
+            break; /// BREAKE as it MUST be the last (if optional skipped )
+          } else {
+            valid = false;
+          }
+        }
+      } else {
+        valid = false;
+      }
+    }
+
+    // posses to ensure that MUST contain POSes exists in output
+    let posses = [];
+    words.forEach((w) => {
+      posses.push(w.POS);
+    });
+
+    if (!posses.some((e) => settigs.mustContain.includes(e))) {
+      valid = false;
+    }
+
+    // filter out number "ANY", must left with a single
+    // number elemtent(singular or pural), if there two
+    // that mean that pular goes with singular therefore invalid
+    number_arr = number_arr.filter((x) => x !== "ANY");
+    if (number_arr.length > 1) {
+      valid = false;
+    } else {
+      number = number_arr[0];
+    }
+    if (valid) {
+      output = {
+        words,
+        valid,
+        number,
+      };
+      input_obj = {};
+      input_obj.children = words;
+      input_obj.number = number;
+      input_obj.valid = valid;
+      input_obj.name = find;
+      input_obj.wordsConsumed = words.length;
+      output = input_obj;
+
+      return output;
+    } else {
+      //console.log("invalid output from getNP");
+      return { valid, err: err, wordsConsumed: 0 };
+    }
+  }
+
+  getSettigsForPOS(pos) {
+    switch (pos) {
+      case "NP": // NP -> DT (JJ) [NN, NNS]
+        return {
+          expected: [["DT"], ["JJ"], ["NN", "NNS"]],
+          optional_Pos: 1,
+          optional: ["JJ"],
+          mustContain: ["NN", "NNS"],
+        };
+      case "DT": // DT
+        return {
+          expected: [["DT"]],
+          optional_Pos: 999, // if no special cases
+          mustContain: ["DT"],
+        };
+      case "VP":
+        return {
+          expected: [["VB"], ["NP"]],
+          optional_Pos: 1,
+          optional: ["NP"],
+          mustContain: ["VB"],
+        };
+      case "NNS":
+        return {
+          expected: [["NNS"]],
+          optional_Pos: 999, // if no special cases
+          mustContain: ["NNS"],
+        };
+      case "NN":
+        return {
+          expected: [["NN"]],
+          optional_Pos: 999, // if no special cases
+          mustContain: ["NN"],
+        };
+      case "VB":
+        return {
+          expected: [["VB"]],
+          optional_Pos: 999, // if no special cases
+          mustContain: ["VB"],
+        };
+    }
+
+    return;
   }
 
   //=========================

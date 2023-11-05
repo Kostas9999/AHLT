@@ -54,6 +54,7 @@ async function main(req, res) {
     let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
 
     let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
+    let parse_childs = obj_parsel.parse_childs(strip_P);
 
     let s_obj_str = obj_parsel.sObjToString(all_s_obj); // string to display
     let obj_to_trent = obj_parsel.toTrent(all_s_obj); // trent object
@@ -63,7 +64,7 @@ async function main(req, res) {
       data: {
         ok: true,
         text: output, //rules_valid_word[0],
-        trent_data: obj_to_trent,
+        trent_data: strip_P,
         // pharse_obj,
         //  isDictionary,
         //  isPOS,
