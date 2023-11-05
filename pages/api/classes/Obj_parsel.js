@@ -1,4 +1,6 @@
 import { Children } from "react";
+import { NP } from "./NP";
+import { VP } from "./VP";
 
 export class Obj_parsel {
   constructor(lexicon, pos, rules) {
@@ -52,12 +54,29 @@ export class Obj_parsel {
     return output;
   }
   parse_childs(input) {
-    console.log(input);
+    let number;
+    let leftNode = input.leftNode;
+    let rightNode = input.rightNode;
+
+    if (leftNode.valid) {
+      number = leftNode.number;
+      let childrens = leftNode.children;
+      for (let i = 0; i < childrens.length; i++) {
+        let e = childrens[i];
+        if (e.type == "W") {
+          let rules = this.getNext_FromRule(e.POS);
+
+          return;
+        } else {
+        }
+      }
+    }
+    return [{ name: "S", children: [leftNode, rightNode] }];
   }
 
   parsePhrases(input, find) {
-    let leftNode = { wordsConsumed: 0 };
-    let rightNode = { wordsConsumed: 0 };
+    let leftNode = { valid: false, wordsConsumed: 0 };
+    let rightNode = { valid: false, wordsConsumed: 0 };
     let offset = 0;
     let S = { leftNode, rightNode };
     let rules = this.getNext_FromRule(find);
@@ -72,11 +91,50 @@ export class Obj_parsel {
         rightNode = this.getNP(input, rules[i].opt2, offset);
       }
 
-      let S = { leftNode, rightNode };
+      let valid = rightNode.number == leftNode.number;
+      let S = { leftNode, rightNode, valid };
 
       return S;
-      // }
     }
+  }
+
+  processNP(input_all) {
+    let input = input_all.children;
+    let np_obj = new NP();
+
+    for (let i = 0; i < input?.length; i++) {
+      if (input[i].POS == "DT") {
+        np_obj._dt = input[i];
+      }
+      if (input[i].POS == "NNS" || input[i].POS == "NN") {
+        np_obj._valid = true;
+        np_obj._noun = input[i];
+      }
+      if (input[i].POS == "JJ") {
+        np_obj._jj = input[i];
+      }
+    }
+
+    return np_obj;
+  }
+
+  processVP(input_all) {
+    let input = input_all.children;
+    let vp_obj = new VP();
+
+    for (let i = 0; i < input?.length; i++) {
+      if (input[i].POS == "VB") {
+        vp_obj._verb = input[i];
+        vp_obj._number = input[i].number;
+        vp_obj._valid = true;
+      }
+      if (input[i].POS == "NP") {
+        let np = this.processNP(input[i]);
+        vp_obj._object = np;
+      }
+    }
+
+    return vp_obj;
   }
 
   getNP(input_obj, find, offset) {
@@ -174,6 +232,7 @@ export class Obj_parsel {
       input_obj.number = number;
       input_obj.valid = valid;
       input_obj.name = find;
+      input_obj.POS = find;
       input_obj.wordsConsumed = words.length;
       output = input_obj;
 
@@ -325,7 +384,55 @@ export class Obj_parsel {
     }
     return "";
   }
+  sObjToString(s) {
+    let output = "[S  ";
+    output += ``;
 
+    Object.keys(s).forEach((e) => {
+      let curr_ph = s[e];
+      output += `\n[_${s[e]._POS}_  `;
+
+      if (curr_ph._POS == "NP") {
+        if (this.ifDef(curr_ph["_dt"]?.POS)) {
+          output += `[  _${curr_ph["_dt"]?.POS}_ ${curr_ph["_dt"]?.name} ]`;
+        }
+        if (this.ifDef(curr_ph["_jj"]?.POS)) {
+          output += `[  _${curr_ph["_jj"]?.POS}_ ${curr_ph["_jj"]?.name} ]`;
+        }
+        if (this.ifDef(curr_ph["_noun"]?.POS)) {
+          output += `[  _${curr_ph["_noun"]?.POS}_ ${curr_ph["_noun"]?.name} ]`;
+        }
+        output += "] ";
+      }
+      if (curr_ph._POS == "VP") {
+        if (this.ifDef(curr_ph["_verb"]?.POS)) {
+          output += `[  _${curr_ph["_verb"]?.POS}_ ${curr_ph["_verb"]?.name} ]`;
+        }
+        if (this.ifDef(curr_ph["_object"])) {
+          let curr = curr_ph["_object"];
+          output += `[  _${curr.POS}_  `;
+
+          if (this.ifDef(curr["_dt"]?.POS)) {
+            output += `[  _${curr["_dt"]?.POS}_ ${curr["_dt"]?.name} ]`;
+          }
+          if (this.ifDef(curr["_jj"]?.POS)) {
+            output += `[  _${curr["_jj"]?.POS}_ ${curr["_jj"]?.name} ]`;
+          }
+          if (this.ifDef(curr["_noun"]?.POS)) {
+            output += `[  _${curr["_noun"]?.POS}_ ${curr["_noun"]?.name} ]`;
+          }
+          output += "] ";
+        }
+      }
+    });
+    output += ` ]`;
+    return output;
+  }
+  ifDef(input) {
+    if (input) return input;
+    else return "";
+  }
+  /*
   sObjToString(input) {
     let output = "[ ";
     input = input[0];
@@ -340,46 +447,5 @@ export class Obj_parsel {
     output = output + "]";
     return output;
   }
-
-  toTrent(input) {
-    let x = input;
-    /*
- children: [
-    {
-      name: 'Manager',
-      attributes: {
-        department: 'Production',
-      },
-    /*
-
-    let x =[
-      {
-        name: "vg",
-    
-        children: [
-          {
-            name: "NP",
-            children: [
-              {
-                name: "DET",
-              },
-              {
-                name: "NN",
-              },
-            ],
-          },
-          {
-            name: "VP",    
-            children: [
-              {
-                name: "VB",
-              },
-            ],
-          },
-        ],
-      },
-    ]
-*/
-    return x;
-  }
+  */
 }

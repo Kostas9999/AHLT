@@ -6,6 +6,9 @@ import { Rule } from "./classes/Rule";
 import { Parsel } from "./classes/Parsel";
 import { Obj_parsel } from "./classes/Obj_parsel";
 import { TreePlay } from "./classes/treePlay";
+import { Sentence } from "./classes/Sentence";
+import { NP } from "./classes/NP";
+import { toTrent } from "./classes/TreeToTrent";
 const fs = require("fs");
 
 export default withIronSessionApiRoute(main, ironOptions);
@@ -54,17 +57,28 @@ async function main(req, res) {
     let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
 
     let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
+    let np_raw = strip_P.leftNode;
+    let vp_raw = strip_P.rightNode;
+
+    let np = obj_parsel.processNP(np_raw);
+    let vp = obj_parsel.processVP(vp_raw);
+
+    let s = new Sentence(np, vp);
+    s.numberValid();
+    //console.log(s);
     let parse_childs = obj_parsel.parse_childs(strip_P);
 
-    let s_obj_str = obj_parsel.sObjToString(all_s_obj); // string to display
-    let obj_to_trent = obj_parsel.toTrent(all_s_obj); // trent object
+    let s_obj_str = obj_parsel.sObjToString(s); // string to display
+
+    let visual_tree = toTrent(s);
+    //let obj_to_trent = obj_parsel.toTrent(s); // trent object
     let output = s_obj_str;
 
     res.status(200).json({
       data: {
         ok: true,
         text: output, //rules_valid_word[0],
-        trent_data: strip_P,
+        trent_data: visual_tree,
         // pharse_obj,
         //  isDictionary,
         //  isPOS,
