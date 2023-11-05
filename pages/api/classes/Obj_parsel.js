@@ -40,7 +40,7 @@ export class Obj_parsel {
     input.forEach((e) => {
       if (e.POS == "CC") {
         words.push(e);
-        output.push({ name:`S${count++}`, count: count++, children: words });
+        output.push({ name: `S${count++}`, count: count++, children: words });
         words = [];
       } else {
         words.push(e);
@@ -52,8 +52,39 @@ export class Obj_parsel {
     return output;
   }
 
+  parsePhrases(input, find) {
+    let patterns = [];
+
+    let rules = this.getNext_FromRule(find);
+
+    for (let i = 0; i < rules.length; i++) {
+      let r = this.getNext_FromRule(rules[i].opt1);
+
+      for (let i = 0; i < r.length; i++) {
+        let x = this.getNext_FromRule(r[i].opt1);
+
+        for (let i = 0; i < x.length; i++) {}
+      }
+    }
+  }
+
+  x = [];
+  findGroud(input, find) {
+    let rules = this.getNext_FromRule(find);
+    for (let i = 0; i < rules.length; i++) {
+      let e = rules[i];
+
+      if (e.opt1 == "#") {
+        return;
+      }
+      this.x.push(e.opt1);
+      this.findGroud(input, e.opt1);
+    }
+    console.log(this.x);
+  }
+
+  //=========================
   s_to_p(input) {
-  
     // input is array of word objects
     // {word data}, {word data}...
     let inital_possible = [{ opt1: "DT" }, { opt1: "VB" }];
@@ -62,64 +93,62 @@ export class Obj_parsel {
     let words = [];
 
     // loop word array
-   
-      // individual word data
-      
+
+    // individual word data
+
     for (let j = 0; j < input.length; j++) {
-      // {word data}  
+      // {word data}
       let word_pos = input[j].POS;
       let curr_word_obj = input[j];
-         
-        // get array of rules
-        // start is current pos... 
+
+      // get array of rules
+      // start is current pos...
       for (let i = 0; i < next_possible.length; i++) {
         //{ start: 'DT', opt1: 'NN', opt2: '#' }
         //{ start: 'DT', opt1: 'JJ', opt2: '#' }
         let r = next_possible[i];
-          
+
         // go over rules untill there last node (no more rules)
-        if (next_possible.length == 1 && r.opt1 == "#") {      /// if there no more
-          let tag = this.tag_pharse(words)
+        if (next_possible.length == 1 && r.opt1 == "#") {
+          /// if there no more
+          let tag = this.tag_pharse(words);
           // array of words that belongs to single pharse
-          // 
+          //
           //[{word data}, {word data}..]
-          console.log(words)  
-         let attr= {
-            count: 'singular DEMO',
-          }
-          
-          p.push({ type: "P", name: tag, children: words ,attributes:attr});
+
+          let attr = {
+            count: "singular DEMO",
+          };
+
+          p.push({ type: "P", name: tag, children: words, attributes: attr });
           next_possible = inital_possible;
 
-          console.log(p) 
-          // put pharse obj in to array where children: contains array of word objets 
+          // put pharse obj in to array where children: contains array of word objets
           //[{type: 'P',name: 'NP',children: [ [Word data], [word data]... ],attributes: { count: 'singular DEMO' } }]
-          words = [];         
-        
+          words = [];
         } else if (word_pos == r.opt1) {
-
-          // if not the end: put this word in to array and check for next rule
+          // if not the end: put this word in to array and check for next
           words.push(curr_word_obj);
-          next_possible = this.getNext_FromRule(word_pos);         
+          next_possible = this.getNext_FromRule(word_pos);
         }
       }
     }
-    let attr= {
-      count: 'singular DEMO',
-    }
+    let attr = {
+      count: "singular DEMO",
+    };
     // if not the end of rules but end of words just add what it has to an array (incoplete phrase)
-    let tag = this.tag_pharse(words)
-    p.push({ type: "P", name: tag, children: words, attributes:attr });   
-//console.log(p)
+    let tag = this.tag_pharse(words);
+    p.push({ type: "P", name: tag, children: words, attributes: attr });
+
     return p;
   }
 
   all_s(input) {
-    let output = [];   
+    let output = [];
     for (let i = 0; i < input.length; i++) {
       if (input[i].children.length > 0) {
         let x = this.s_to_p(input[i].children);
-        input[i].children = x
+        input[i].children = x;
 
         output.push(input[i]);
       }
@@ -142,35 +171,33 @@ export class Obj_parsel {
   }
 
   tag_pharse(input) {
-  
-    for(let i = 0; i< input.length; i++){
-      let curr_word = input[i].POS
-      if(curr_word == "DT" || curr_word == "NN"|| curr_word == "NN") return "NP"
-      if(curr_word == "VB") return "VP"
-   
+    for (let i = 0; i < input.length; i++) {
+      let curr_word = input[i].POS;
+      if (curr_word == "DT" || curr_word == "NN" || curr_word == "NN")
+        return "NP";
+      if (curr_word == "VB") return "VP";
     }
     return "";
   }
 
-  sObjToString(input){
-    let output ="[ ";
-    input = input[0]
-    output += `${input.name}  `
-    input['children'].forEach(e => {   
-    output +=  `[_${e.name}_  `
-      e['children'].forEach(e=>{     
-    output +=  `[_${e.POS}_ ${e.name}] `
-      })
-       output += ` ]`
+  sObjToString(input) {
+    let output = "[ ";
+    input = input[0];
+    output += `${input.name}  `;
+    input["children"].forEach((e) => {
+      output += `[_${e.name}_  `;
+      e["children"].forEach((e) => {
+        output += `[_${e.POS}_ ${e.name}] `;
+      });
+      output += ` ]`;
     });
-    output = output+ "]"   
+    output = output + "]";
     return output;
   }
 
-  toTrent(input){
-
-    let x = input
-/*
+  toTrent(input) {
+    let x = input;
+    /*
  children: [
     {
       name: 'Manager',
@@ -208,8 +235,5 @@ export class Obj_parsel {
     ]
 */
     return x;
-
-
   }
-
 }

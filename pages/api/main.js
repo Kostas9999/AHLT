@@ -50,12 +50,13 @@ async function main(req, res) {
 
     //let word_to_obj = obj_parsel.word_to_struc(input);
     let words_to_obj_arr = obj_parsel.words_to_obj_arr(input);
-    let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr);
+    let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr); //[ { name: 'S1', count: 2, children: [ [word obj], [word obj] ] } ]
+    let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
 
-    let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr);
-    let s_obj_str = obj_parsel.sObjToString(all_s_obj);
-    let obj_to_trent = obj_parsel.toTrent(all_s_obj);
+    let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
 
+    let s_obj_str = obj_parsel.sObjToString(all_s_obj); // string to display
+    let obj_to_trent = obj_parsel.toTrent(all_s_obj); // trent object
     let output = s_obj_str;
 
     res.status(200).json({

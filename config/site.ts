@@ -4,14 +4,8 @@ export const siteConfig = {
 	name: "AHLT",
 	
 	navItems: [
-		{
-			label: "Home",
-			href: "/",
-		},
-    {
-      label: "Upload",
-      href: "/upload",
-    },
+	
+  
    
    
     {

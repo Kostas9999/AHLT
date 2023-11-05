@@ -1,13 +1,11 @@
 DT NNS NN VB JJ
 S NP VP
-NP DT NNS
 NP DT NN
-DT NNS #
-DT NN #
+NP DT NNS
+NP DT NP
 NN # #
-NNS # #
-VB DT #
-DT JJ #
-JJ NN #
-VP VB NP
+DT # #
+JJ # #
+
+
 
