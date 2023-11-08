@@ -71,7 +71,7 @@ export default function IndexPage({ session_prop }) {
 
   async function parse(e) {
     let text = e.target.value.trim();
-    let endpoint = "http://localhost:3000/api/main";
+    let endpoint = "/api/main";
     let data = { type: "parse", text };
 
     const response = await axios.post(endpoint, data, {
@@ -196,7 +196,7 @@ export default function IndexPage({ session_prop }) {
 }
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    let endpoint = "http://localhost:3000/api/main";
+    let endpoint = "/api/main";
     let data = { type: "init" };
 
     const response = await axios.post(endpoint, data, {
