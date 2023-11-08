@@ -161,7 +161,7 @@ export default function IndexPage({ session_prop }) {
           {/*Center column TREE*/}
           <Grid className="  h-full">
             <section className="  h-full">
-              <TreeChart children={trent_data} />
+              <TreeChart>{trent_data}</TreeChart>
             </section>
           </Grid>
         </Grid>
