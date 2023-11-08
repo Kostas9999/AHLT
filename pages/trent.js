@@ -48,11 +48,13 @@ let x =[
 
 
 
-export default function OrgChartTree({chill}) {
+export default function OrgChartTree({children}) {
+  children = children.trent_data
+  console.log(children)
  
   const orgChart = {
     name: "S",
-    children: chill,
+    children: children,
   };
 
 

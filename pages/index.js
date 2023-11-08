@@ -101,6 +101,21 @@ export default function IndexPage({ session_prop }) {
         <Grid xs={3} item={true}>
           {/* Left column  POS  */}
           <Grid>
+            <section className=" justify-right text-center ">
+              <Textarea
+                isReadOnly
+                isInvalid={posBorder}
+                label="Parts Of Speach"
+                variant="bordered"
+                labelPlacement="outside"
+                placeholder="Enter your description"
+                defaultValue={pos.join("   ")}
+                className="max-w-xs"
+              />
+            </section>
+          </Grid>
+          {/* Left column RULES  */}
+          <Grid>
             <section className=" justify-right text-center "></section>
             <Table aria-label="Example table with dynamic content">
               <TableHeader columns={columns_rules}>
@@ -116,21 +131,6 @@ export default function IndexPage({ session_prop }) {
                 )}
               </TableBody>
             </Table>
-          </Grid>
-          {/* Left column RULES  */}
-          <Grid>
-            <section className=" justify-right text-center ">
-              <Textarea
-                isReadOnly
-                isInvalid={posBorder}
-                label="Parts Of Speach"
-                variant="bordered"
-                labelPlacement="outside"
-                placeholder="Enter your description"
-                defaultValue={pos.join("   ")}
-                className="max-w-xs"
-              />
-            </section>
           </Grid>
         </Grid>
         {/* Center column  */}
@@ -161,7 +161,7 @@ export default function IndexPage({ session_prop }) {
           {/*Center column TREE*/}
           <Grid className="  h-full">
             <section className="  h-full">
-              <TreeChart chill={<trent_data/>} />
+              <TreeChart children={{trent_data}} />
             </section>
           </Grid>
         </Grid>
