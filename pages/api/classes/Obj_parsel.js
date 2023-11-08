@@ -94,7 +94,7 @@ export class Obj_parsel {
       //  if (rules[i].opt1 == "NP") {
 
       leftNode = this.getNP(input, rules[i].opt1, offset);
-      
+
       offset = leftNode?.wordsConsumed;
       if (leftNode.valid) {
         input.splice(0, leftNode.wordsConsumed);
@@ -192,6 +192,7 @@ export class Obj_parsel {
       if (settigs.expected[i].includes(curr_word.POS)) {
         words.push(curr_word);
         number_arr.push(curr_word.number);
+
         continue;
       } else if (i == settigs.optional_Pos) {
         // special case for optinal words
@@ -201,7 +202,6 @@ export class Obj_parsel {
 
           let x = this.getNP(tempIN, settigs.optional[0]);
           words.push(x);
-
           valid = x.valid;
         } else {
           if (settigs?.expected[i + 1].includes(curr_word.POS)) {
@@ -231,17 +231,22 @@ export class Obj_parsel {
     // number elemtent(singular or pural), if there two
     // that mean that pular goes with singular therefore invalid
     number_arr = number_arr.filter((x) => x !== "ANY");
-    if (number_arr.length > 1) {
+    // filter dublicates
+    let number_uniq = [...new Set(number_arr)];
+
+    if (number_uniq.length > 1) {
       valid = false;
     } else {
-      number = number_arr[0];
+      number = number_uniq[0];
     }
+
     if (valid) {
       output = {
         words,
         valid,
         number,
       };
+
       input_obj = {};
       input_obj.children = words;
       input_obj.number = number;
