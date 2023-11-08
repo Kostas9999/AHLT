@@ -11,23 +11,33 @@ export class Obj_parsel {
   word_to_struc(input) {
     let output = {};
     let lex = this._lexicon;
+    let meta = { ok: [{ isDictionary: false, msg: "" }] };
 
     for (let i = 0; i < lex.length; i++) {
       if (lex[i].name.toLowerCase() == input.toLowerCase()) {
         output = lex[i];
+        meta.ok["isDictionary"] = true;
+        meta.msg = "";
+      } else {
+        meta.msg = "Unknown word";
       }
     }
 
-    return output;
+    return { output, meta };
   }
 
   words_to_obj_arr(input) {
     let output = [];
     let out_obj = {};
+    let meta, temp;
+
     let input_str_arr = input.split(" ");
 
     input_str_arr.forEach((e) => {
-      let temp = this.word_to_struc(e);
+      let res = this.word_to_struc(e);
+      temp = res.output;
+      meta = res.meta;
+
       output.push(temp);
     });
 
@@ -82,8 +92,9 @@ export class Obj_parsel {
     let rules = this.getNext_FromRule(find);
     for (let i = 0; i < rules.length; i++) {
       //  if (rules[i].opt1 == "NP") {
-      leftNode = this.getNP(input, rules[i].opt1, offset);
 
+      leftNode = this.getNP(input, rules[i].opt1, offset);
+      
       offset = leftNode?.wordsConsumed;
       if (leftNode.valid) {
         input.splice(0, leftNode.wordsConsumed);
@@ -101,6 +112,10 @@ export class Obj_parsel {
   processNP(input_all) {
     let input = input_all.children;
     let np_obj = new NP();
+
+    if (input_all.valid) {
+      np_obj._number = input_all.number;
+    }
 
     for (let i = 0; i < input?.length; i++) {
       if (input[i].POS == "DT") {
@@ -288,7 +303,6 @@ export class Obj_parsel {
     return;
   }
 
-  //=========================
   s_to_p(input) {
     // input is array of word objects
     // {word data}, {word data}...
@@ -410,7 +424,7 @@ export class Obj_parsel {
         }
         if (this.ifDef(curr_ph["_object"])) {
           let curr = curr_ph["_object"];
-          output += `[  _${curr.POS}_  `;
+          output += `[ _${curr.POS}_  `;
 
           if (this.ifDef(curr["_dt"]?.POS)) {
             output += `[  _${curr["_dt"]?.POS}_ ${curr["_dt"]?.name} ]`;
@@ -432,20 +446,4 @@ export class Obj_parsel {
     if (input) return input;
     else return "";
   }
-  /*
-  sObjToString(input) {
-    let output = "[ ";
-    input = input[0];
-    output += `${input.name}  `;
-    input["children"].forEach((e) => {
-      output += `[_${e.name}_  `;
-      e["children"].forEach((e) => {
-        output += `[_${e.POS}_ ${e.name}] `;
-      });
-      output += ` ]`;
-    });
-    output = output + "]";
-    return output;
-  }
-  */
 }

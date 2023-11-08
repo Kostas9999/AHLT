@@ -3,7 +3,7 @@ import { ironOptions } from "./session/session_config";
 import { Words } from "./classes/Word";
 import { Pos } from "./classes/Pos";
 import { Rule } from "./classes/Rule";
-import { Parsel } from "./classes/Parsel";
+//import { Parsel } from "./classes/Parsel";
 import { Obj_parsel } from "./classes/Obj_parsel";
 import { TreePlay } from "./classes/treePlay";
 import { Sentence } from "./classes/Sentence";
@@ -26,7 +26,7 @@ async function main(req, res) {
     load_pos();
     load_rule();
 
-    parsel = new Parsel(lexicon.lexicon, pos.pos, rules.rules);
+    // parsel = new Parsel(lexicon.lexicon, pos.pos, rules.rules);
     obj_parsel = new Obj_parsel(lexicon.lexicon, pos.pos, rules.rules);
 
     res.status(200).json({
@@ -43,20 +43,37 @@ async function main(req, res) {
     let isPOS = true;
     let input = data.text;
 
-    //let parse_output = parsel.words_To_POS(input);
-    //isPOS = parsel.validate_POS(parse_output);
-    //let rules_output = parsel.output_arr(parse_output, lexicon, rules);
-    //let rules_valid_word = parsel.validate_rules_words(rules_output);
-    //let pharse_obj = parsel.validate_rules_phrase(rules_valid_word);
-    //let obj_toSring = parsel.obj_toString(pharse_obj);
-    // parsel.build_Tree(rules_valid_word[0]);
+    // creates word objects from string
+    // let word_to_obj = obj_parsel.word_to_struc(input);
 
-    //let word_to_obj = obj_parsel.word_to_struc(input);
     let words_to_obj_arr = obj_parsel.words_to_obj_arr(input);
-    let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr); //[ { name: 'S1', count: 2, children: [ [word obj], [word obj] ] } ]
-    let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
 
+    /*
+    [
+  {
+    type: 'W',
+    name: 'the',
+    POS: 'DT',
+    number: 'ANY',
+    root: 'THE\r',
+    attributes: { POS: 'DT', Number: 'ANY' }
+  },
+  {
+    type: 'W',
+    name: 'dog',
+    POS: 'NN',
+    number: 'singular',
+    root: 'DOG\r',
+    attributes: { POS: 'NN', Number: 'singular' }
+  }
+]*/
+
+    // let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr); //[ { name: 'S1', count: 2, children: [ [word obj], [word obj] ] } ]
+
+    //let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
+    //
     let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
+   
     let np_raw = strip_P.leftNode;
     let vp_raw = strip_P.rightNode;
 
@@ -65,13 +82,12 @@ async function main(req, res) {
 
     let s = new Sentence(np, vp);
     s.numberValid();
-    //console.log(s);
+
     let parse_childs = obj_parsel.parse_childs(strip_P);
 
     let s_obj_str = obj_parsel.sObjToString(s); // string to display
 
     let visual_tree = toTrent(s);
-    //let obj_to_trent = obj_parsel.toTrent(s); // trent object
     let output = s_obj_str;
 
     res.status(200).json({

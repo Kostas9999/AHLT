@@ -1,10 +1,11 @@
 export class NP {
-  constructor(dt, jj, noun) {
+  constructor(dt, jj, noun, number) {
     this._dt = dt;
     this._jj = jj;
     this._noun = noun;
     this._POS = "NP";
     this._valid = false;
+    this._number = number;
   }
   _POS = "";
 
@@ -29,7 +30,6 @@ export class NP {
   }
 
   get number() {
-    this.number = "MUST SET NUMBER Vaidation";
     return this._number;
   }
   set number(number) {
