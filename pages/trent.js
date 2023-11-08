@@ -49,7 +49,7 @@ let x =[
 
 
 export default function OrgChartTree({children}) {
-  children = children.trent_data
+ // children = children[0]
   console.log(children)
  
   const orgChart = {
