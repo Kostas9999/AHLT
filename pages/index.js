@@ -93,6 +93,16 @@ export default function IndexPage({ session_prop }) {
     setOutput(output);
   }
 
+  function t() {
+    // Render the children here
+    return (
+      <div>
+        {" "}
+        <TreeChart children={trent_data} />
+      </div>
+    );
+  }
+
   return (
     <DefaultLayout>
       {/* MAIN Grid  */}
@@ -160,9 +170,7 @@ export default function IndexPage({ session_prop }) {
           </Grid>
           {/*Center column TREE*/}
           <Grid className="  h-full">
-            <section className="  h-full">
-              <TreeChart>{trent_data}</TreeChart>
-            </section>
+            <section className="  h-full">{t()}</section>
           </Grid>
         </Grid>
         {/* Right column MAIN*/}

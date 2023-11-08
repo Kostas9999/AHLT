@@ -46,7 +46,7 @@ let x = [
 ];
 
 export default function OrgChartTree({ children }) {
-  console.log(children);
+ // console.log(children);
   const orgChart = {
     name: "S",
     children: children,
