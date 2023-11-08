@@ -95,12 +95,7 @@ export default function IndexPage({ session_prop }) {
 
   function t() {
     // Render the children here
-    return (
-      <div>
-        {" "}
-        <TreeChart children={trent_data} />
-      </div>
-    );
+    return <TreeChart children={trent_data} />;
   }
 
   return (

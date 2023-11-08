@@ -16,34 +16,7 @@ const containerStyles = {
 // This is a simplified example of an org chart with a depth of 2.
 // Note how deeper levels are defined recursively via the `children` property.
 
-let x = [
-  {
-    name: "NP",
 
-    children: [
-      {
-        name: "NP",
-        children: [
-          {
-            name: "DET",
-          },
-          {
-            name: "NN",
-          },
-        ],
-      },
-      {
-        name: "VP",
-
-        children: [
-          {
-            name: "VB",
-          },
-        ],
-      },
-    ],
-  },
-];
 
 export default function OrgChartTree({ children }) {
  // console.log(children);
