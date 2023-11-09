@@ -149,6 +149,13 @@ export class Obj_parsel {
       }
     }
 
+    if (vp_obj._object) {
+      let vp_number = vp_obj._number;
+      let vp_obj_number = vp_obj._object._number;
+      let number_OK = vp_obj_number == vp_number;
+      vp_obj._valid = number_OK && vp_obj._valid;
+    }
+
     return vp_obj;
   }
 

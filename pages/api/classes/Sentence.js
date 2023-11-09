@@ -17,10 +17,15 @@ export class Sentence {
   set verb_Phrase(verb_Phrase) {
     this._verb_Phrase = verb_Phrase;
   }
+
   numberValid() {
     let n_number = this._noun_Phrase.number;
     let v_number = this._verb_Phrase.number;
-    //console.log(this._noun_Phrase.number);
-    return true;
+    let valid =
+      v_number == n_number &&
+      typeof n_number != "undefined" &&
+      typeof v_number != "undefined";
+
+    return valid;
   }
 }

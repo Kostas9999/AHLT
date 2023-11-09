@@ -73,7 +73,7 @@ async function main(req, res) {
     //let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
     //
     let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
-   
+
     let np_raw = strip_P.leftNode;
     let vp_raw = strip_P.rightNode;
 
@@ -81,8 +81,6 @@ async function main(req, res) {
     let vp = obj_parsel.processVP(vp_raw);
 
     let s = new Sentence(np, vp);
-    s.numberValid();
-
     let parse_childs = obj_parsel.parse_childs(strip_P);
 
     let s_obj_str = obj_parsel.sObjToString(s); // string to display

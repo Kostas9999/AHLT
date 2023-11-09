@@ -35,5 +35,6 @@ export class VP {
   }
   isValid() {
     return this._valid;
+    numberValid();
   }
 }
