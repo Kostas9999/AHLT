@@ -3,7 +3,7 @@ import { ironOptions } from "./session/session_config";
 import { Words } from "./classes/Word";
 import { Pos } from "./classes/Pos";
 import { Rule } from "./classes/Rule";
-//import { Parsel } from "./classes/Parsel";
+import { Tester } from "./classes/Tester";
 import { Obj_parsel } from "./classes/Obj_parsel";
 import { TreePlay } from "./classes/treePlay";
 import { Sentence } from "./classes/Sentence";
@@ -17,6 +17,7 @@ let lexicon;
 let pos;
 let rules;
 let parsel;
+let test;
 let obj_parsel;
 async function main(req, res) {
   let data = req.body;
@@ -28,6 +29,7 @@ async function main(req, res) {
 
     // parsel = new Parsel(lexicon.lexicon, pos.pos, rules.rules);
     obj_parsel = new Obj_parsel(lexicon.lexicon, pos.pos, rules.rules);
+    test = new Tester(lexicon.lexicon, pos.pos, rules.rules);
 
     res.status(200).json({
       data: {
@@ -39,15 +41,23 @@ async function main(req, res) {
   }
 
   if (data.type == "parse") {
-    let isDictionary = true;
+    let isDict = true;
     let isPOS = true;
     let input = data.text;
 
     // creates word objects from string
     // let word_to_obj = obj_parsel.word_to_struc(input);
 
-    let words_to_obj_arr = obj_parsel.words_to_obj_arr(input);
+    let input_array = input.split(" ")
+    let words_to_obj_arr = obj_parsel.words_to_obj_arr(input_array);
 
+
+
+    // returns array of indexes for words that not found in dictionary
+    let validate_POS_DICT = test.test_dict(words_to_obj_arr, input_array)
+  
+    let err_msg = test.err_msg(validate_POS_DICT)
+    
     /*
     [
   {
@@ -81,6 +91,7 @@ async function main(req, res) {
     let vp = obj_parsel.processVP(vp_raw);
 
     let s = new Sentence(np, vp);
+    
     let parse_childs = obj_parsel.parse_childs(strip_P);
 
     let s_obj_str = obj_parsel.sObjToString(s); // string to display
@@ -88,14 +99,19 @@ async function main(req, res) {
     let visual_tree = toTrent(s);
     let output = s_obj_str;
 
+  isPOS = validate_POS_DICT.no_POS.length==0;
+  isDict = validate_POS_DICT.no_dict.length==0;
+ 
     res.status(200).json({
       data: {
         ok: true,
         text: output, //rules_valid_word[0],
         trent_data: visual_tree,
-        // pharse_obj,
-        //  isDictionary,
-        //  isPOS,
+        err_msg,
+        isPOS,
+        isDict,
+       // words_notInDict,
+         
       },
     });
   }

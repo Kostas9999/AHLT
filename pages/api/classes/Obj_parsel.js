@@ -11,33 +11,26 @@ export class Obj_parsel {
   word_to_struc(input) {
     let output = {};
     let lex = this._lexicon;
-    let meta = { ok: [{ isDictionary: false, msg: "" }] };
 
     for (let i = 0; i < lex.length; i++) {
       if (lex[i].name.toLowerCase() == input.toLowerCase()) {
         output = lex[i];
-        meta.ok["isDictionary"] = true;
-        meta.msg = "";
+
       } else {
-        meta.msg = "Unknown word";
+      
       }
     }
 
-    return { output, meta };
+    return output;
   }
 
   words_to_obj_arr(input) {
-    let output = [];
-    let out_obj = {};
-    let meta, temp;
+    let output = [];  
+    let temp;
 
-    let input_str_arr = input.split(" ");
-
-    input_str_arr.forEach((e) => {
+    input.forEach((e) => {
       let res = this.word_to_struc(e);
-      temp = res.output;
-      meta = res.meta;
-
+      temp = res;   
       output.push(temp);
     });
 
