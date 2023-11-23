@@ -29,7 +29,7 @@ export default function IndexPage({ session_prop }) {
   const [output, setOutput] = React.useState("Output");
   const [posBorder_POS, setPosBorder_POS] = React.useState(false);
   const [trent_data, setTrent_data] = React.useState(null);
-/*
+  /*
   async function init() {}
   const handleSubmit = async (e) => {
     //init();
@@ -84,12 +84,11 @@ export default function IndexPage({ session_prop }) {
     let output = out.text;
     let tr_data = out.trent_data;
 
+    setPosBorder_POS(!out.isValid);
 
-    setPosBorder_POS(!out.isPOS);  
-   
     setTrent_data(tr_data);
-   
-    output = out.err_msg == ""? output:out.err_msg
+
+    output = out.err_msg == "" ? output : out.err_msg;
     setOutput(output);
   }
 
@@ -104,7 +103,6 @@ export default function IndexPage({ session_prop }) {
       <Grid gap={2} container wrap="nowrap" className=" mt-10 ">
         {/* Left column  */}
         <Grid xs={3} item={true}>
-   
           {/* Left column RULES  */}
           <Grid>
             <section className=" justify-right text-center "></section>
@@ -123,16 +121,14 @@ export default function IndexPage({ session_prop }) {
               </TableBody>
             </Table>
           </Grid>
-                           {/* Left column  POS  */}
-                           <Grid>
+          {/* Left column  POS  */}
+          <Grid>
             <section className=" justify-right text-center ">
               <Textarea
                 isReadOnly
-                isInvalid={posBorder_POS}
                 label="Parts Of Speach"
                 variant="bordered"
                 labelPlacement="outside"
-               
                 defaultValue={pos.join("   ")}
                 className="max-w-xs"
               />
@@ -146,7 +142,6 @@ export default function IndexPage({ session_prop }) {
             <section className=" justify-right text-center">
               <Input
                 onChange={parse}
-                
                 type="text"
                 isClearable="true"
                 placeholder="Please Enter Phrase"
@@ -157,7 +152,7 @@ export default function IndexPage({ session_prop }) {
           <Grid>
             <section className=" justify-right text-center ">
               <Textarea
-             
+                isInvalid={posBorder_POS}
                 variant="bordered"
                 labelPlacement="outside"
                 placeholder="Enter your description"
@@ -174,9 +169,9 @@ export default function IndexPage({ session_prop }) {
         {/* Right column MAIN*/}
         <Grid xs={3} item={true}>
           {/* Right column  DICTIONARY*/}
-          <Grid >
+          <Grid>
             <section className=" justify-right text-center ">
-              <Table aria-label="Example table with dynamic content">
+              <Table aria-label=" table with dynamic content">
                 <TableHeader columns={columns_dict}>
                   {(column) => (
                     <TableColumn key={column.key}>{column.label}</TableColumn>

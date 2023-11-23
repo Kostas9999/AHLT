@@ -4,7 +4,7 @@ export class Pos {
   }
 
   get pos() {
-    let first_Line = this._line.split("\r\n")[0];
+    let first_Line = this._line.split("\n")[0];
     let arr = first_Line.split(" ");
     return arr;
   }

@@ -48,40 +48,13 @@ async function main(req, res) {
     // creates word objects from string
     // let word_to_obj = obj_parsel.word_to_struc(input);
 
-    let input_array = input.split(" ")
+    let input_array = input.split(" ");
     let words_to_obj_arr = obj_parsel.words_to_obj_arr(input_array);
 
-
-
     // returns array of indexes for words that not found in dictionary
-    let validate_POS_DICT = test.test_dict(words_to_obj_arr, input_array)
-  
-    let err_msg = test.err_msg(validate_POS_DICT)
-    
-    /*
-    [
-  {
-    type: 'W',
-    name: 'the',
-    POS: 'DT',
-    number: 'ANY',
-    root: 'THE\r',
-    attributes: { POS: 'DT', Number: 'ANY' }
-  },
-  {
-    type: 'W',
-    name: 'dog',
-    POS: 'NN',
-    number: 'singular',
-    root: 'DOG\r',
-    attributes: { POS: 'NN', Number: 'singular' }
-  }
-]*/
+    let validate_POS_DICT = test.test_dict(words_to_obj_arr, input_array);
+    let err_msg = test.err_msg(validate_POS_DICT);
 
-    // let obj_arr_to_S_arr = obj_parsel.obj_arr_to_S_arr(words_to_obj_arr); //[ { name: 'S1', count: 2, children: [ [word obj], [word obj] ] } ]
-
-    //let all_s_obj = obj_parsel.all_s(obj_arr_to_S_arr); // [ { name: 'S1', count: 2, children: [ [phrase obj], [phrase obj] ] } ]
-    //
     let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
 
     let np_raw = strip_P.leftNode;
@@ -90,18 +63,30 @@ async function main(req, res) {
     let np = obj_parsel.processNP(np_raw);
     let vp = obj_parsel.processVP(vp_raw);
 
+    let np_Number_valid = test.test_NP_Number(np);
+    np_Number_valid ? "" : (err_msg += `Phrase number missmatch! `);
+
+    let isPnumber = false;
+
+    if (np._number && vp._number && np._number !== vp._number) {
+      err_msg += `Phrase number missmatch!\nNP: ${np._number}\nVP: ${vp._number}  `;
+      isPnumber = false;
+    } else {
+      isPnumber = true;
+    }
+
     let s = new Sentence(np, vp);
-    
-    let parse_childs = obj_parsel.parse_childs(strip_P);
 
     let s_obj_str = obj_parsel.sObjToString(s); // string to display
 
     let visual_tree = toTrent(s);
     let output = s_obj_str;
 
-  isPOS = validate_POS_DICT.no_POS.length==0;
-  isDict = validate_POS_DICT.no_dict.length==0;
- 
+    isPOS = validate_POS_DICT.no_POS.length == 0;
+    isDict = validate_POS_DICT.no_dict.length == 0;
+
+    let isValid = isPOS && isDict && isPnumber && np_Number_valid;
+
     res.status(200).json({
       data: {
         ok: true,
@@ -110,8 +95,8 @@ async function main(req, res) {
         err_msg,
         isPOS,
         isDict,
-       // words_notInDict,
-         
+        isPnumber,
+        isValid,
       },
     });
   }

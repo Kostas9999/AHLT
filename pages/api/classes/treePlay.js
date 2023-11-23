@@ -19,7 +19,7 @@ export class TreePlay {
     traverse(root, null, null);
 
     function traverse(root, temp, temp1) {
-      console.log(root);
+    
       for (let i = 0; i < rules.length; i++) {
         if (root.node == rules[i].start) {
           root.leftNode = rules[i].opt1;
@@ -29,7 +29,7 @@ export class TreePlay {
 
       if (typeof root.leftNode != undefined) {
         let curr_node = root.leftNode;
-        console.log(root);
+       
         // /traverse(new TreeNode(curr_node));
       }
       /*

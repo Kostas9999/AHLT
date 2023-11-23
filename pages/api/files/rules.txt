@@ -3,11 +3,15 @@ S NP VP
 NP DT NN
 NP DT NNS
 NP DT NP
-NN # #
-DT # #
-JJ # #
-VB # #
+NP JJ NN
+NP JJ NNS
 VP VB NP
+NN . .
+NNS . .
+DT . .
+JJ . .
+VB . .
+
 
 
 

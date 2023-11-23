@@ -15,9 +15,7 @@ export class Obj_parsel {
     for (let i = 0; i < lex.length; i++) {
       if (lex[i].name.toLowerCase() == input.toLowerCase()) {
         output = lex[i];
-
       } else {
-      
       }
     }
 
@@ -25,12 +23,12 @@ export class Obj_parsel {
   }
 
   words_to_obj_arr(input) {
-    let output = [];  
+    let output = [];
     let temp;
 
     input.forEach((e) => {
       let res = this.word_to_struc(e);
-      temp = res;   
+      temp = res;
       output.push(temp);
     });
 
@@ -80,23 +78,21 @@ export class Obj_parsel {
   parsePhrases(input, find) {
     let leftNode = { valid: false, wordsConsumed: 0 };
     let rightNode = { valid: false, wordsConsumed: 0 };
-    let offset = 0;
+    //let offset = 0;
     let S = { leftNode, rightNode };
     let rules = this.getNext_FromRule(find);
     for (let i = 0; i < rules.length; i++) {
-      //  if (rules[i].opt1 == "NP") {
+      leftNode = this.getP(input, rules[i].opt1);
 
-      leftNode = this.getNP(input, rules[i].opt1, offset);
-
-      offset = leftNode?.wordsConsumed;
+      //offset = leftNode?.wordsConsumed;
       if (leftNode.valid) {
         input.splice(0, leftNode.wordsConsumed);
 
-        rightNode = this.getNP(input, rules[i].opt2, offset);
+        rightNode = this.getP(input, rules[i].opt2);
       }
 
       let valid = rightNode.number == leftNode.number;
-      let S = { leftNode, rightNode, valid };
+      S = { leftNode, rightNode, valid };
 
       return S;
     }
@@ -152,7 +148,7 @@ export class Obj_parsel {
     return vp_obj;
   }
 
-  getNP(input_obj, find, offset) {
+  getP(input_obj, find, offset) {
     // get settings for particular POS
     // settings specific to POS for expected structure
     // e.g. NP expect to have   DT (JJ) [NN, NNS]
@@ -200,7 +196,7 @@ export class Obj_parsel {
           let tempIN = input;
           tempIN.shift();
 
-          let x = this.getNP(tempIN, settigs.optional[0]);
+          let x = this.getP(tempIN, settigs.optional[0]);
           words.push(x);
           valid = x.valid;
         } else {
@@ -235,7 +231,7 @@ export class Obj_parsel {
     let number_uniq = [...new Set(number_arr)];
 
     if (number_uniq.length > 1) {
-      valid = false;
+      valid = true;
     } else {
       number = number_uniq[0];
     }
@@ -258,7 +254,6 @@ export class Obj_parsel {
 
       return output;
     } else {
-      //console.log("invalid output from getNP");
       return { valid, err: err, wordsConsumed: 0 };
     }
   }
