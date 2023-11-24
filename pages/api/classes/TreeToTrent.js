@@ -4,6 +4,8 @@ export default function toTrent(x) {
   let np = processNP(nounP);
   let vp = processVP(verbP);
 
+
+
   let children = [];
 
   if (nounP.valid) {

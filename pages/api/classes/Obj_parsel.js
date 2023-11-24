@@ -15,8 +15,7 @@ export class Obj_parsel {
     for (let i = 0; i < lex.length; i++) {
       if (lex[i].name.toLowerCase() == input.toLowerCase()) {
         output = lex[i];
-      } else {
-      }
+      } 
     }
 
     return output;
@@ -126,6 +125,7 @@ export class Obj_parsel {
     let input = input_all.children;
     let vp_obj = new VP();
 
+
     for (let i = 0; i < input?.length; i++) {
       if (input[i].POS == "VB") {
         vp_obj._verb = input[i];
@@ -182,7 +182,7 @@ export class Obj_parsel {
       let curr_word = input[i];
 
       if (find == "VP") {
-        // console.log(settigs.optional_Pos);
+    
       }
       // check if word POS matches expected POS
       if (settigs.expected[i].includes(curr_word.POS)) {

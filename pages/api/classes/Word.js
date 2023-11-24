@@ -12,10 +12,12 @@ export class Words {
         POS: parts[1],
         number: parts[2],
         root: parts[3],
+        /*
         attributes: {
           POS: parts[1],
           Number: parts[2]
         },
+        */
       });
     });
   }
