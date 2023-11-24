@@ -100,9 +100,7 @@ export default function IndexPage({ session_prop }) {
 
     let to_beNext = [new Set(temp_arr_nexNode)]
     console.log(to_beNext)
-    //setRules_hook(temp_arr_nexNode)
-    // rules
-    // last entry
+   
   }
 
   async function parse(e) {
