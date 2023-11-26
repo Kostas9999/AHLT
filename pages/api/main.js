@@ -46,21 +46,16 @@ async function main(req, res) {
     let isPnumber = false;
     let input = data.text;
 
-    // creates word objects from string
-    // let word_to_obj = obj_parsel.word_to_struc(input);
-
+    // make an word array from user input
     let input_array = input.split(" ");
+    // check against dictionary, existing word convert to an word object (from dictionary)
     let words_to_obj_arr = obj_parsel.words_to_obj_arr(input_array);
-    let lastPOS = words_to_obj_arr[words_to_obj_arr.length-1].POS
-    
-   
 
     // returns array of indexes for words that not found in dictionary
     let validate_POS_DICT = test.test_dict(words_to_obj_arr, input_array);
     let err_msg = test.err_msg(validate_POS_DICT);
 
     let strip_P = obj_parsel.parsePhrases(words_to_obj_arr, "S");
-  
 
     let np_raw = strip_P.leftNode;
     let vp_raw = strip_P.rightNode;
@@ -71,11 +66,7 @@ async function main(req, res) {
     let np_Number_valid = test.test_NP_Number(np);
     let vp_Number_valid = test.test_VP_Number(vp);
     vp_Number_valid ? "" : (err_msg += `VPhrase number missmatch! `);
- 
-    np_Number_valid ? "" : (err_msg += `NPhrase number missmatch! `)
-
-
-   
+    np_Number_valid ? "" : (err_msg += `NPhrase number missmatch! `);
 
     if (np._number && vp._number && np._number !== vp._number) {
       err_msg += `Phrase number missmatch!\nNP: ${np._number}\nVP: ${vp._number}  `;
@@ -87,26 +78,23 @@ async function main(req, res) {
     let s = new Sentence(np, vp);
 
     let s_obj_str = obj_parsel.sObjToString(s); // string to display
-    
+
     let trent_data = toTrent(s);
     let output = s_obj_str;
 
     isPOS = validate_POS_DICT.no_POS.length == 0;
     isDict = validate_POS_DICT.no_dict.length == 0;
 
-    let isValid = isPOS && isDict && isPnumber && np_Number_valid && vp_Number_valid;
+    let isValid =
+      isPOS && isDict && isPnumber && np_Number_valid && vp_Number_valid;
 
     res.status(200).json({
       data: {
         ok: true,
-        text: output, 
+        text: output,
         trent_data,
         err_msg,
-        isPOS,
-        isDict,
-        isPnumber,
         isValid,
-        lastPOS
       },
     });
   }

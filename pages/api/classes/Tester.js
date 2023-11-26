@@ -28,23 +28,25 @@ export class Tester {
     return false;
   }
 
-  test_VP_Number(input){
-    let isNumberValid
+  test_VP_Number(input) {
+    let isNumberValid;
 
-    if(!input._verb){return true}
-    
-    let innerNP_valid = this.test_NP_Number(input._object)  
-    let innerNP_number ;
-   
-    input?._object?.number ? innerNP_number = input._object.number  : ""
-  
-    if(input._number && innerNP_number   ){
-      isNumberValid = input._number == innerNP_number 
+    if (!input._verb) {
+      return true;
     }
-    else{isNumberValid = true}
-       
 
-    return isNumberValid && innerNP_valid   
+    let innerNP_valid = this.test_NP_Number(input._object);
+    let innerNP_number;
+
+    input?._object?.number ? (innerNP_number = input._object.number) : "";
+
+    if (input._number && innerNP_number) {
+      isNumberValid = input._number == innerNP_number;
+    } else {
+      isNumberValid = true;
+    }
+
+    return isNumberValid && innerNP_valid;
   }
 
   err_msg(input) {
@@ -57,4 +59,5 @@ export class Tester {
     }
     return msg;
   }
+ 
 }

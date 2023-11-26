@@ -7,17 +7,11 @@ export class Words {
     lines.forEach((e) => {
       let parts = e.split(" ");
       this.element.push({
-        type: "W",
+        // type: "W",
         name: parts[0],
         POS: parts[1],
         number: parts[2],
         root: parts[3],
-        /*
-        attributes: {
-          POS: parts[1],
-          Number: parts[2]
-        },
-        */
       });
     });
   }
@@ -26,4 +20,3 @@ export class Words {
     return this.element;
   }
 }
-

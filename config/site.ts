@@ -7,11 +7,12 @@ export const siteConfig = {
 	
   
    
-   
+   /*
     {
       label: "About",
       href: "/#",
     }
+	*/
 	],
 	navMenuItems: [
 		

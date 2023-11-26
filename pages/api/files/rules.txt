@@ -2,15 +2,13 @@ DT NNS NN VB JJ NP VP
 S NP VP
 NP DT NN
 NP DT NNS
-NP DT NP
-NP JJ NN
-NP JJ NNS
 VP VB NP
-NN . .
-NNS . .
-DT . .
-JJ . .
-VB . .
+VP VB 
+NN  
+NNS  
+DT  
+JJ  
+VB  
 
 
 

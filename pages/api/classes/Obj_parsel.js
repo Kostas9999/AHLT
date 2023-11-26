@@ -8,146 +8,53 @@ export class Obj_parsel {
     this._pos = pos;
     this._rules = rules;
   }
-  word_to_struc(input) {
-    let output = {};
-    let lex = this._lexicon;
 
-    for (let i = 0; i < lex.length; i++) {
-      if (lex[i].name.toLowerCase() == input.toLowerCase()) {
-        output = lex[i];
-      } 
-    }
-
-    return output;
-  }
-
+  // take array of words and verify against dictionary
   words_to_obj_arr(input) {
     let output = [];
-    let temp;
-
+    // loop over array
     input.forEach((e) => {
-      let res = this.word_to_struc(e);
-      temp = res;
-      output.push(temp);
-    });
-
-    return output;
-  }
-
-  obj_arr_to_S_arr(input) {
-    let output = [];
-    let words = [];
-    let count = 1;
-
-    input.forEach((e) => {
-      if (e.POS == "CC") {
-        words.push(e);
-        output.push({ name: `S${count++}`, count: count++, children: words });
-        words = [];
-      } else {
-        words.push(e);
-      }
-    });
-
-    output.push({ name: `S${count++}`, count: count, children: words });
-
-    return output;
-  }
-  parse_childs(input) {
-    let number;
-    let leftNode = input.leftNode;
-    let rightNode = input.rightNode;
-
-    if (leftNode.valid) {
-      number = leftNode.number;
-      let childrens = leftNode.children;
-      for (let i = 0; i < childrens.length; i++) {
-        let e = childrens[i];
-        if (e.type == "W") {
-          let rules = this.getNext_FromRule(e.POS);
-
-          return;
-        } else {
+      let lex_output = {};
+      // check existance of word in a dictionary
+      this._lexicon.forEach((lex) => {
+        // if word exists, add it to an output
+        if (lex.name.toLowerCase() == e.toLowerCase()) {
+          lex_output = lex;
         }
-      }
-    }
-    return [{ name: "S", children: [leftNode, rightNode] }];
+      });
+      output.push(lex_output);
+    });
+    return output;
   }
 
   parsePhrases(input, find) {
     let leftNode = { valid: false, wordsConsumed: 0 };
     let rightNode = { valid: false, wordsConsumed: 0 };
-    //let offset = 0;
     let S = { leftNode, rightNode };
-    let rules = this.getNext_FromRule(find);
-    for (let i = 0; i < rules.length; i++) {
-      leftNode = this.getP(input, rules[i].opt1);
 
-      //offset = leftNode?.wordsConsumed;
-      if (leftNode.valid) {
-        input.splice(0, leftNode.wordsConsumed);
+    // get rules to see what kind of notes expected
+    let rules = this.solveExpected(find);
 
-        rightNode = this.getP(input, rules[i].opt2);
-      }
+    // send input and what Phrase POS
+    // receive phrase for that POS
+    leftNode = this.getP(input, rules.first[0]);
 
-      let valid = rightNode.number == leftNode.number;
-      S = { leftNode, rightNode, valid };
-
-      return S;
+    //offset = leftNode?.wordsConsumed;
+    if (leftNode.valid) {
+      // remove words that was in first Phrase
+      input.splice(0, leftNode.wordsConsumed);
+      // send input and what Phrase POS
+      // receive phrase for that POS
+      rightNode = this.getP(input, rules.last[0]);
     }
+
+    let valid = rightNode.number == leftNode.number;
+    S = { leftNode, rightNode, valid };
+
+    return S;
   }
 
-  processNP(input_all) {
-    let input = input_all.children;
-    let np_obj = new NP();
-
-    if (input_all.valid) {
-      np_obj._number = input_all.number;
-    }
-
-    for (let i = 0; i < input?.length; i++) {
-      if (input[i].POS == "DT") {
-        np_obj._dt = input[i];
-      }
-      if (input[i].POS == "NNS" || input[i].POS == "NN") {
-        np_obj._valid = true;
-        np_obj._noun = input[i];
-      }
-      if (input[i].POS == "JJ") {
-        np_obj._jj = input[i];
-      }
-    }
-
-    return np_obj;
-  }
-
-  processVP(input_all) {
-    let input = input_all.children;
-    let vp_obj = new VP();
-
-
-    for (let i = 0; i < input?.length; i++) {
-      if (input[i].POS == "VB") {
-        vp_obj._verb = input[i];
-        vp_obj._number = input[i].number;
-        vp_obj._valid = true;
-      }
-      if (input[i].POS == "NP") {
-        let np = this.processNP(input[i]);
-        vp_obj._object = np;
-      }
-    }
-
-    if (vp_obj._object) {
-      let vp_number = vp_obj._number;
-      let vp_obj_number = vp_obj._object._number;
-      let number_OK = vp_obj_number == vp_number;
-      vp_obj._valid = number_OK && vp_obj._valid;
-    }
-
-    return vp_obj;
-  }
-
+  //  find Phrase by POS
   getP(input_obj, find, offset) {
     // get settings for particular POS
     // settings specific to POS for expected structure
@@ -163,6 +70,7 @@ export class Obj_parsel {
     let output;
     let words = [];
 
+    // check if input exist
     let err = "none";
     if (input_obj.length == 1 && Object.keys(input_obj[0]).length == 0) {
       let output = {};
@@ -171,7 +79,6 @@ export class Obj_parsel {
       return output;
     }
 
-    // for processing take only word array
     let input = input_obj;
 
     for (let i = 0; i < input.length; i++) {
@@ -181,19 +88,16 @@ export class Obj_parsel {
       }
       let curr_word = input[i];
 
-      if (find == "VP") {
-    
-      }
       // check if word POS matches expected POS
       if (settigs.expected[i].includes(curr_word.POS)) {
         words.push(curr_word);
         number_arr.push(curr_word.number);
-
         continue;
       } else if (i == settigs.optional_Pos) {
         // special case for optinal words
         if (find == "VP") {
           let tempIN = input;
+
           tempIN.shift();
 
           let x = this.getP(tempIN, settigs.optional[0]);
@@ -230,8 +134,10 @@ export class Obj_parsel {
     // filter dublicates
     let number_uniq = [...new Set(number_arr)];
 
+    // if still have more than one number then its not valid
+    // else tag parse to this number
     if (number_uniq.length > 1) {
-      valid = true;
+      valid = false;
     } else {
       number = number_uniq[0];
     }
@@ -257,52 +163,136 @@ export class Obj_parsel {
       return { valid, err: err, wordsConsumed: 0 };
     }
   }
-
   getSettigsForPOS(pos) {
+    let expectByRules = this.solveExpected(pos);
     switch (pos) {
       case "NP": // NP -> DT (JJ) [NN, NNS]
         return {
-          expected: [["DT"], ["JJ"], ["NN", "NNS"]],
+          expected: [expectByRules.first, ["JJ"], expectByRules.last],
           optional_Pos: 1,
           optional: ["JJ"],
           mustContain: ["NN", "NNS"],
         };
-      case "DT": // DT
-        return {
-          expected: [["DT"]],
-          optional_Pos: 999, // if no special cases
-          mustContain: ["DT"],
-        };
       case "VP":
         return {
-          expected: [["VB"], ["NP"]],
+          expected: [expectByRules.first, expectByRules.last],
           optional_Pos: 1,
           optional: ["NP"],
           mustContain: ["VB"],
         };
-      case "NNS":
+      default:
         return {
-          expected: [["NNS"]],
-          optional_Pos: 999, // if no special cases
-          mustContain: ["NNS"],
-        };
-      case "NN":
-        return {
-          expected: [["NN"]],
-          optional_Pos: 999, // if no special cases
-          mustContain: ["NN"],
-        };
-      case "VB":
-        return {
-          expected: [["VB"]],
-          optional_Pos: 999, // if no special cases
-          mustContain: ["VB"],
+          expected: [[pos]],
+          mustContain: [pos],
         };
     }
-
-    return;
   }
 
+  obj_arr_to_S_arr(input) {
+    let output = [];
+    let words = [];
+    let count = 1;
+
+    input.forEach((e) => {
+      if (e.POS == "CC") {
+        words.push(e);
+        output.push({ name: `S${count++}`, count: count++, children: words });
+        words = [];
+      } else {
+        words.push(e);
+      }
+    });
+
+    output.push({ name: `S${count++}`, count: count, children: words });
+
+    return output;
+  }
+  parse_childs(input) {
+    let number;
+    let leftNode = input.leftNode;
+    let rightNode = input.rightNode;
+
+    if (leftNode.valid) {
+      number = leftNode.number;
+      let childrens = leftNode.children;
+      for (let i = 0; i < childrens.length; i++) {
+        let e = childrens[i];
+        if (e.type == "W") {
+          //  let rules = this.getNext_FromRule(e.POS);
+
+          return;
+        } else {
+        }
+      }
+    }
+    return [{ name: "S", children: [leftNode, rightNode] }];
+  }
+
+  processNP(input_all) {
+    let input = input_all.children;
+    let np_obj = new NP();
+
+    if (input_all.valid) {
+      np_obj._number = input_all.number;
+    }
+
+    for (let i = 0; i < input?.length; i++) {
+      if (input[i].POS == "DT") {
+        np_obj._dt = input[i];
+      }
+      if (input[i].POS == "NNS" || input[i].POS == "NN") {
+        np_obj._valid = true;
+        np_obj._noun = input[i];
+      }
+      if (input[i].POS == "JJ") {
+        np_obj._jj = input[i];
+      }
+    }
+
+    return np_obj;
+  }
+
+  processVP(input_all) {
+    let input = input_all.children;
+    let vp_obj = new VP();
+
+    for (let i = 0; i < input?.length; i++) {
+      if (input[i].POS == "VB") {
+        vp_obj._verb = input[i];
+        vp_obj._number = input[i].number;
+        vp_obj._valid = true;
+      }
+      if (input[i].POS == "NP") {
+        let np = this.processNP(input[i]);
+        vp_obj._object = np;
+      }
+    }
+
+    if (vp_obj._object) {
+      let vp_number = vp_obj._number;
+      let vp_obj_number = vp_obj._object._number;
+      let number_OK = vp_obj_number == vp_number;
+      vp_obj._valid = number_OK && vp_obj._valid;
+    }
+
+    return vp_obj;
+  }
+
+  solveExpected(pos) {
+    let first = [];
+    let last = [];
+
+    this._rules.forEach((e) => {
+      if (e.start == pos) {
+        first.push(e.opt1);
+        last.push(e.opt2);
+      }
+    });
+    first = [...new Set(first)];
+    last = [...new Set(last)];
+    return { first, last };
+  }
+  /*
   s_to_p(input) {
     // input is array of word objects
     // {word data}, {word data}...
@@ -398,6 +388,7 @@ export class Obj_parsel {
     }
     return "";
   }
+  */
   sObjToString(s) {
     let output = "[S  ";
     output += ``;

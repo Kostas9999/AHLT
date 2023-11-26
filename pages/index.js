@@ -30,15 +30,8 @@ export default function IndexPage({ session_prop }) {
   const [output, setOutput] = React.useState("Output");
   const [posBorder_POS, setPosBorder_POS] = React.useState(false);
   const [trent_data, setTrent_data] = React.useState(null);
-  const [rules_hook, setRules_hook] = React.useState(...[rules]);
+  const [suggestion_hook, setSuggestion_hook] = React.useState(...[]);
 
-  /*
-  async function init() {}
-  const handleSubmit = async (e) => {
-    //init();
-    e.preventDefault();
-  };
-*/
   const columns_dict = [
     {
       key: "name",
@@ -72,37 +65,6 @@ export default function IndexPage({ session_prop }) {
     },
   ];
 
-  async function adaptRules(lastPOS){
-
-    let temp_arr_currNode =[]
-    let temp_arr_nexNode=[]
-    let output =[]
-
-    rules.forEach(e => {
-      if(e.opt1 == lastPOS){
-        temp_arr_currNode.push(e.opt2)        
-      } });
-
-     rules.forEach(e=>{      
-        if( temp_arr_currNode.includes(e.start)){
-        temp_arr_nexNode.push(e.opt2)
-        }
-     })
-
-     rules.forEach(e=>{
-
-      
-    
-
-     })
-      
-   
-
-    let to_beNext = [new Set(temp_arr_nexNode)]
-    console.log(to_beNext)
-   
-  }
-
   async function parse(e) {
     let text = e.target.value.trim();
     let endpoint = "./api/main";
@@ -114,7 +76,7 @@ export default function IndexPage({ session_prop }) {
       },
     });
     let out = response.data.data;
-    
+    console.log(out);
 
     let output = out.text;
     let tr_data = out.trent_data;
@@ -122,7 +84,6 @@ export default function IndexPage({ session_prop }) {
     setPosBorder_POS(!out.isValid);
 
     setTrent_data(tr_data);
-    adaptRules(out.lastPOS)
 
     output = out.err_msg == "" ? output : out.err_msg;
     setOutput(output);
@@ -148,7 +109,7 @@ export default function IndexPage({ session_prop }) {
                   <TableColumn key={column.key}>{column.label}</TableColumn>
                 )}
               </TableHeader>
-              <TableBody items={rules_hook}>
+              <TableBody items={rules}>
                 {(item) => (
                   <TableRow key={item.start}>
                     {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
@@ -184,6 +145,7 @@ export default function IndexPage({ session_prop }) {
               />
             </section>
           </Grid>
+
           {/*Center column OUTPUT*/}
           <Grid>
             <section className=" justify-right text-center ">
@@ -193,7 +155,6 @@ export default function IndexPage({ session_prop }) {
                 labelPlacement="outside"
                 placeholder="Enter your description"
                 value={output}
-                className=" mt-10 "
               />
             </section>
           </Grid>
